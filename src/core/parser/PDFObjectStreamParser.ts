@@ -10,7 +10,7 @@ import { waitForTick } from 'src/utils';
 class PDFObjectStreamParser extends PDFObjectParser {
   static forStream = (
     rawStream: PDFRawStream,
-    shouldWaitForTick?: () => boolean,
+    shouldWaitForTick?: () => boolean
   ) => new PDFObjectStreamParser(rawStream, shouldWaitForTick);
 
   private alreadyParsed: boolean;
@@ -39,8 +39,8 @@ class PDFObjectStreamParser extends PDFObjectParser {
     for (let idx = 0, len = offsetsAndObjectNumbers.length; idx < len; idx++) {
       const { objectNumber, offset } = offsetsAndObjectNumbers[idx];
       this.bytes.moveTo(this.firstOffset + offset);
-      const object = this.parseObject();
       const ref = PDFRef.of(objectNumber, 0);
+      const object = this.parseObject(ref);
       this.context.assign(ref, object);
       if (this.shouldWaitForTick()) await waitForTick();
     }

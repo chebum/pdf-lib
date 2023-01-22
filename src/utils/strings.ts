@@ -19,6 +19,12 @@ export const padStart = (value: string, length: number, padChar: string) => {
   return padding + value;
 };
 
+export const stringAsByteArray = (str: string): Uint8Array => {
+  const buffer = new Uint8Array(str.length);
+  copyStringIntoBuffer(str, buffer, 0);
+  return buffer;
+}
+
 export const copyStringIntoBuffer = (
   str: string,
   buffer: Uint8Array,
@@ -77,7 +83,7 @@ export const charAtIndex = (text: string, index: number): [string, number] => {
 export const charSplit = (text: string) => {
   const chars: string[] = [];
 
-  for (let idx = 0, len = text.length; idx < len; ) {
+  for (let idx = 0, len = text.length; idx < len;) {
     const [c, cLen] = charAtIndex(text, idx);
     chars.push(c);
     idx += cLen;
