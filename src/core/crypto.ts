@@ -1536,9 +1536,11 @@ class CipherTransformFactory {
     const flags = (dict.get(PDFName.of("P")) as PDFNumber).asNumber();
     const revision = (dict.get(PDFName.of("R")) as PDFNumber).asNumber();
     // meaningful when V is 4 or 5
-    const encryptMetadata =
-      (algorithm === 4 || algorithm === 5) &&
-      (dict.get(PDFName.of("EncryptMetadata")) as PDFBool).asBoolean() !== false;
+    let encryptMetadata = false;
+    if (algorithm === 4 || algorithm === 5) {
+      const dicValue = dict.get(PDFName.of("EncryptMetadata")) as PDFBool;
+      encryptMetadata = dicValue && dicValue.asBoolean() !== false;
+    }
     this.encryptMetadata = encryptMetadata;
 
     let passwordBytes: Uint8Array | undefined;
