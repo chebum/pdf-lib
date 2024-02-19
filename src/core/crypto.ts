@@ -1602,7 +1602,7 @@ class CipherTransformFactory {
       );
     }
     if (!encryptionKey && !password) {
-      throw new Error("NEEDS PASSWORD");
+      throw new Error("No password given");
     } else if (!encryptionKey && password) {
       // Attempting use the password as an owner password
       const decodedPassword = this.decodeUserPassword(
