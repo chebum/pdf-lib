@@ -37,13 +37,13 @@ import {
   UnexpectedObjectTypeError,
 } from 'src/core';
 import {
-  ParseSpeeds,
   AttachmentOptions,
-  SaveOptions,
   Base64SaveOptions,
-  LoadOptions,
   CreateOptions,
   EmbedFontOptions,
+  LoadOptions,
+  ParseSpeeds,
+  SaveOptions,
   SetTitleOptions,
 } from 'src/api/PDFDocumentOptions';
 import PDFObject from 'src/core/objects/PDFObject';
@@ -143,26 +143,31 @@ export default class PDFDocument {
     assertIs(throwOnInvalidObject, 'throwOnInvalidObject', ['boolean']);
 
     const bytes = toUint8Array(pdf);
-    const context = await PDFParser.forBytesWithOptions(
+    let context = await PDFParser.forBytesWithOptions(
       bytes,
       parseSpeed,
       throwOnInvalidObject,
       capNumbers,
     ).parseDocument();
-    const pdfDoc = new PDFDocument(context, ignoreEncryption, updateMetadata, false);
 
-    if (pdfDoc.isEncrypted) {
-      // Decrypt
-      const context = await PDFParser.forBytesWithOptions(
-        bytes,
-        parseSpeed,
-        throwOnInvalidObject,
-        capNumbers,
-        pdfDoc.cryptoFactory
-      ).parseDocument();
-      return new PDFDocument(context, true, updateMetadata, true);
+    const isEncrypted = !!context.lookup(context.trailerInfo.Encrypt);
+    if (isEncrypted) {
+      const encryptDict = context.lookup(context.trailerInfo.Encrypt, PDFDict);
+      const fileIds = context.lookup(context.trailerInfo.ID, PDFArray);
+      if (fileIds) {
+        const cryptoFactory = new CipherTransformFactory(encryptDict, (fileIds.get(0) as PDFHexString).asBytes());
+        context = await PDFParser.forBytesWithOptions(
+          bytes,
+          parseSpeed,
+          throwOnInvalidObject,
+          capNumbers,
+          cryptoFactory
+        ).parseDocument();
+        delete context.trailerInfo.Encrypt;
+      }
     }
-    return pdfDoc;
+
+    return new PDFDocument(context, ignoreEncryption, updateMetadata);
   }
 
   /**
@@ -178,7 +183,7 @@ export default class PDFDocument {
     const catalog = PDFCatalog.withContextAndPages(context, pageTreeRef);
     context.trailerInfo.Root = context.register(catalog);
 
-    return new PDFDocument(context, false, updateMetadata, false);
+    return new PDFDocument(context, false, updateMetadata);
   }
 
   /** The low-level context of this document. */
@@ -189,8 +194,6 @@ export default class PDFDocument {
 
   /** Whether or not this document is encrypted. */
   readonly isEncrypted: boolean;
-
-  readonly cryptoFactory?: CipherTransformFactory;
 
   /** The default word breaks used in PDFPage.drawText */
   defaultWordBreaks: string[] = [' '];
@@ -209,8 +212,7 @@ export default class PDFDocument {
   private constructor(
     context: PDFContext,
     ignoreEncryption: boolean,
-    updateMetadata: boolean,
-    isDecrypted: boolean
+    updateMetadata: boolean
   ) {
     assertIs(context, 'context', [[PDFContext, 'PDFContext']]);
     assertIs(ignoreEncryption, 'ignoreEncryption', ['boolean']);
@@ -218,15 +220,6 @@ export default class PDFDocument {
     this.context = context;
     this.catalog = context.lookup(context.trailerInfo.Root) as PDFCatalog;
     this.isEncrypted = !!context.lookup(context.trailerInfo.Encrypt);
-
-    if (this.isEncrypted && !isDecrypted) {
-      const encryptDict = context.lookup(context.trailerInfo.Encrypt, PDFDict);
-      const fileIds = context.lookup(context.trailerInfo.ID, PDFArray);
-      this.cryptoFactory = new CipherTransformFactory(encryptDict, (fileIds.get(0) as PDFHexString).asBytes())
-    } else if (this.isEncrypted) {
-      // context.delete(context.trailerInfo.Encrypt);
-      delete context.trailerInfo.Encrypt;
-    }
 
     this.pageCache = Cache.populatedBy(this.computePages);
     this.pageMap = new Map();

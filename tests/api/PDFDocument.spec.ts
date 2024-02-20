@@ -1,7 +1,9 @@
 import fontkit from '@pdf-lib/fontkit';
 import fs from 'fs';
 import {
+  Duplex,
   EncryptedPDFError,
+  NonFullScreenPageMode,
   ParseSpeeds,
   PDFArray,
   PDFDict,
@@ -9,8 +11,6 @@ import {
   PDFHexString,
   PDFName,
   PDFPage,
-  Duplex,
-  NonFullScreenPageMode,
   PrintScaling,
   ReadingDirection,
   ViewerPreferences,
@@ -74,7 +74,7 @@ describe(`PDFDocument`, () => {
         PDFDocument.load(oldEncryptedPdfBytes1, {
           parseSpeed: ParseSpeeds.Fastest,
         }),
-      ).rejects.toThrow(new EncryptedPDFError());
+      ).rejects.toThrow(new EncryptedPDFError('No password given'));
     });
 
     // it(`throws an error for old encrypted PDFs (2)`, async () => {
@@ -90,34 +90,7 @@ describe(`PDFDocument`, () => {
         PDFDocument.load(newEncryptedPdfBytes, {
           parseSpeed: ParseSpeeds.Fastest,
         }),
-      ).rejects.toThrow(new EncryptedPDFError());
-    });
-
-    it(`does not throw an error for old encrypted PDFs when ignoreEncryption=true (1)`, async () => {
-      const pdfDoc = await PDFDocument.load(oldEncryptedPdfBytes1, {
-        ignoreEncryption: true,
-        parseSpeed: ParseSpeeds.Fastest,
-      });
-      expect(pdfDoc).toBeInstanceOf(PDFDocument);
-      expect(pdfDoc.isEncrypted).toBe(true);
-    });
-
-    // it(`does not throw an error for old encrypted PDFs when ignoreEncryption=true (2)`, async () => {
-    //   const pdfDoc = await PDFDocument.load(oldEncryptedPdfBytes2, {
-    //     ignoreEncryption: true,
-    //     parseSpeed: ParseSpeeds.Fastest,
-    //   });
-    //   expect(pdfDoc).toBeInstanceOf(PDFDocument);
-    //   expect(pdfDoc.isEncrypted).toBe(true);
-    // });
-
-    it(`does not throw an error for new encrypted PDFs when ignoreEncryption=true`, async () => {
-      const pdfDoc = await PDFDocument.load(newEncryptedPdfBytes, {
-        ignoreEncryption: true,
-        parseSpeed: ParseSpeeds.Fastest,
-      });
-      expect(pdfDoc).toBeInstanceOf(PDFDocument);
-      expect(pdfDoc.isEncrypted).toBe(true);
+      ).rejects.toThrow(new EncryptedPDFError('No password given'));
     });
 
     it(`does not throw an error for invalid PDFs when throwOnInvalidObject=false`, async () => {
