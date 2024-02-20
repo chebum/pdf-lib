@@ -32,7 +32,7 @@
     "Ching Chang (https://github.com/ChingChang9)"
   ],
   "scripts": {
-    "release:latest": "yarn publish --tag latest --access public && yarn pack && yarn release:tag",
+    "release:latest": "yarn publish --tag latest && yarn pack && yarn release:tag",
     "release:next": "yarn publish --tag next",
     "release:prep": "yarn clean && yarn lint && yarn typecheck && yarn test && yarn build",
     "release:tag": "TAG=\"v$(yarn --silent get:version)\" && git tag $TAG && git push origin $TAG",
