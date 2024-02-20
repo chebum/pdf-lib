@@ -77,6 +77,21 @@ describe(`PDFDocument`, () => {
       ).rejects.toThrow(new EncryptedPDFError('No password given'));
     });
 
+    it(`automatically decrypts encrypted PDFs if file contains password`, async () => {
+      const pdfDoc = await PDFDocument.load(fs.readFileSync('assets/pdfs/encrypted_3.pdf'), {
+        parseSpeed: ParseSpeeds.Fastest,
+      });
+      expect(pdfDoc).toBeInstanceOf(PDFDocument);
+
+      const savedBytes = await pdfDoc.save();
+      const loadedDoc = await PDFDocument.load(savedBytes, {
+        parseSpeed: ParseSpeeds.Fastest,
+      });
+      expect(loadedDoc).toBeInstanceOf(PDFDocument);
+      expect(loadedDoc.catalog.keys()).toEqual(pdfDoc.catalog.keys());
+      expect(loadedDoc.getPage(0).node.keys()).toEqual(pdfDoc.getPage(0).node.keys());
+    });
+
     // it(`throws an error for old encrypted PDFs (2)`, async () => {
     //   await expect(
     //     PDFDocument.load(oldEncryptedPdfBytes2, {
