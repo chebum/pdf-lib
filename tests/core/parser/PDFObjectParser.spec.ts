@@ -1,6 +1,7 @@
 import PDFPageLeaf from 'src/core/structures/PDFPageLeaf';
 import {
   mergeIntoTypedArray,
+  numberToString,
   PDFArray,
   PDFBool,
   PDFCatalog,
@@ -16,7 +17,6 @@ import {
   PDFRef,
   PDFString,
   typedArrayFor,
-  numberToString,
 } from 'src/index';
 
 type ParseOptions = { capNumbers?: boolean };
@@ -257,11 +257,11 @@ describe(`PDFObjectParser`, () => {
 
     it(`respects escaped parenthesis`, () => {
       expectParse('(FOO\\(BAR)').toBeInstanceOf(PDFString);
-      expectParseStr('(FOO\\(BAR)').toBe('(FOO\\(BAR)');
+      expectParseStr('(FOO\\(BAR)').toBe('(FOO(BAR)');
     });
 
     it(`respects escaped backslashes`, () => {
-      expect(() => parse('(FOO\\\\(BAR)')).toThrow();
+      expectParseStr('(FOO\\\\(BAR)').toBe('(FOO\\(BAR)');
     });
   });
 

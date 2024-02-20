@@ -1,4 +1,4 @@
-import { PDFObjectParsingError, PDFStreamParsingError, Position, UnbalancedParenthesisError } from 'src/core/errors';
+import { PDFObjectParsingError, PDFStreamParsingError, Position } from 'src/core/errors';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFBool from 'src/core/objects/PDFBool';
 import PDFDict, { DictMap } from 'src/core/objects/PDFDict';
@@ -22,7 +22,7 @@ import { IsDelimiter } from 'src/core/syntax/Delimiters';
 import { Keywords } from 'src/core/syntax/Keywords';
 import { IsDigit, IsNumeric } from 'src/core/syntax/Numeric';
 import { IsWhitespace } from 'src/core/syntax/Whitespace';
-import { charFromCode } from 'src/utils';
+import { arrayAsString, charFromCode } from 'src/utils';
 import { CipherTransformFactory } from '../crypto';
 
 // TODO: Throw error if eof is reached before finishing object parse...
@@ -122,44 +122,122 @@ class PDFObjectParser extends BaseParser {
   }
 
   protected parseString(ref?: PDFRef): PDFString {
-    let nestingLvl = 0;
-    let isEscaped = false;
-    let value = '';
+    let numParen = 1;
+    let done = false;
+    const strBuf: number[] = [];
 
+    this.bytes.assertNext(CharCodes.LeftParen); // Consume left parenthesis
+
+    let ch = this.bytes.next();
     while (!this.bytes.done()) {
-      const byte = this.bytes.next();
-      value += charFromCode(byte);
-
-      // Check for unescaped parenthesis
-      if (!isEscaped) {
-        if (byte === CharCodes.LeftParen) nestingLvl += 1;
-        if (byte === CharCodes.RightParen) nestingLvl -= 1;
+      let charBuffered = false;
+      switch (ch | 0) {
+        case -1:
+          console.warn('Unterminated string');
+          done = true;
+          break;
+        case CharCodes.LeftParen: // '('
+          ++numParen;
+          strBuf.push(0x28);
+          break;
+        case CharCodes.RightParen: // ')'
+          if (--numParen === 0) {
+            done = true;
+          } else {
+            strBuf.push(0x29);
+          }
+          break;
+        case 0x5c: // '\\'
+          ch = this.bytes.next();
+          switch (ch) {
+            case -1:
+              console.warn('Unterminated string');
+              done = true;
+              break;
+            case 0x6e: // 'n'
+              strBuf.push(10);  // '\n'
+              break;
+            case 0x72: // 'r'
+              strBuf.push(13);  // '\r'
+              break;
+            case 0x74: // 't'
+              strBuf.push(9);    // '\t'
+              break;
+            case 0x62: // 'b'
+              strBuf.push(8);    // '\b'
+              break;
+            case 0x66: // 'f'
+              strBuf.push(12);    // '\f'
+              break;
+            case 0x5c: // '\'
+            case 0x28: // '('
+            case 0x29: // ')'
+              strBuf.push(ch);
+              break;
+            case 0x30: // '0'
+            case 0x31: // '1'
+            case 0x32: // '2'
+            case 0x33: // '3'
+            case 0x34: // '4'
+            case 0x35: // '5'
+            case 0x36: // '6'
+            case 0x37: // '7'
+              let x = ch & 0x0f;
+              ch = this.bytes.next();
+              charBuffered = true;
+              if (ch >= /* '0' = */ 0x30 && ch <= /* '7' = */ 0x37) {
+                x = (x << 3) + (ch & 0x0f);
+                ch = this.bytes.next();
+                if (ch >= /* '0' = */ 0x30 && ch /* '7' = */ <= 0x37) {
+                  charBuffered = false;
+                  x = (x << 3) + (ch & 0x0f);
+                }
+              }
+              strBuf.push(x);
+              break;
+            case 0x0d: // CR
+              if (this.bytes.peek() === /* LF = */ 0x0a) {
+                this.bytes.next();
+              }
+              break;
+            case 0x0a: // LF
+              break;
+            default:
+              strBuf.push(ch);
+              break;
+          }
+          break;
+        default:
+          strBuf.push(ch);
+          break;
       }
 
-      // Track whether current character is being escaped or not
-      if (byte === CharCodes.BackSlash) {
-        isEscaped = !isEscaped;
-      } else if (isEscaped) {
-        isEscaped = false;
+      if (done) {
+        break;
       }
-
-      // Once (if) the unescaped parenthesis balance out, return their contents
-      if (nestingLvl === 0) {
-        let actualValue = value.substring(1, value.length - 1);
-
-        if (this.cryptoFactory && ref) {
-          const transformer = this.cryptoFactory.createCipherTransform(
-            ref.objectNumber,
-            ref.generationNumber,
-          );
-          actualValue = transformer.decryptString(actualValue);
-        }
-        // Remove the outer parens so they aren't part of the contents
-        return PDFString.of(actualValue);
+      if (!charBuffered) {
+        ch = this.bytes.next();
       }
     }
 
-    throw new UnbalancedParenthesisError(this.bytes.position());
+    let actualValue: string;
+    if (this.cryptoFactory && ref) {
+      const transformer = this.cryptoFactory.createCipherTransform(
+        ref.objectNumber,
+        ref.generationNumber,
+      );
+      const bytes = new Uint8Array(strBuf.length);
+      for (let i = strBuf.length - 1; i >= 0; i--) {
+        bytes[i] = strBuf[i];
+      }
+      actualValue = arrayAsString(transformer.decryptBytes(bytes));
+    } else {
+      actualValue = '';
+      for (ch of strBuf) {
+        actualValue += charFromCode(ch);
+      }
+    }
+    return PDFString.of(actualValue);
   }
 
   // TODO: Compare performance of string concatenation to charFromCode(...bytes)
@@ -203,7 +281,7 @@ class PDFObjectParser extends BaseParser {
       !this.bytes.done() &&
       this.bytes.peek() !== CharCodes.GreaterThan &&
       this.bytes.peekAhead(1) !== CharCodes.GreaterThan
-    ) {
+      ) {
       const key = this.parseName();
       const value = this.parseObject(ref);
       dict.set(key, value);

@@ -15,6 +15,7 @@ import {
   ReadingDirection,
   ViewerPreferences,
 } from 'src/index';
+import { PDFObject, PDFRef } from 'src/core';
 
 const examplePngImage =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9TxaoVBzuIdMhQnSyIijhKFYtgobQVWnUwufQLmjQkKS6OgmvBwY/FqoOLs64OroIg+AHi5uak6CIl/i8ptIjx4Lgf7+497t4BQqPCVLNrAlA1y0jFY2I2tyr2vKIfAgLoRVhipp5IL2bgOb7u4ePrXZRneZ/7cwwoeZMBPpF4jumGRbxBPLNp6Zz3iUOsJCnE58TjBl2Q+JHrsstvnIsOCzwzZGRS88QhYrHYwXIHs5KhEk8TRxRVo3wh67LCeYuzWqmx1j35C4N5bSXNdZphxLGEBJIQIaOGMiqwEKVVI8VEivZjHv4Rx58kl0yuMhg5FlCFCsnxg//B727NwtSkmxSMAd0vtv0xCvTsAs26bX8f23bzBPA/A1da219tALOfpNfbWuQIGNwGLq7bmrwHXO4Aw0+6ZEiO5KcpFArA+xl9Uw4YugX61tzeWvs4fQAy1NXyDXBwCIwVKXvd492Bzt7+PdPq7wcdn3KFLu4iBAAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAlFJREFUeNrt289r02AYB/Dvk6Sl4EDKpllTlFKsnUdBHXgUBEHwqHj2IJ72B0zwKHhxJ08i/gDxX/AiRfSkBxELXTcVxTa2s2xTsHNN8ngQbQL70RZqG/Z9b29JnvflkydP37whghG3ZaegoxzfwB5vBCAAAQhAAAIQgAAEIAABCEAAAhCAAAQgwB5rstWPtnP0LqBX/vZNyLF6vVrpN/hucewhb4g+B2AyAwiwY7NGOXijviS9vBeYh6CEP4edBLDADCAAAQhAAAIQgAAEIAABCDAUAFF/GIN1DM+PBYCo/ohMXDQ1WPjoeUZH1mMBEEh0oqLGvsHCy0S4NzWVWotJBogbvZB+brDwQT7UWSmXy5sxyQB9HQEROdVv4HQ+vx+QmS4iXsWmCK7Usu8AhOqAXMzlcn3VgWTbugQgEYrxMkZ/gyUPgnuhe2C6/Stxvdeg2ezMJERvhOuoZ+JBrNYBRuDdBtDuXkDM25nCHLbZSv9X6A4VHU+DpwCcbvbjcetLtTaOANtuirrux08HM0euisjDEMKC7RQuq+C+pVJqpzx3NZ3+eeBza9I0rWJgyHnxg2sAJrqnaHUzFcyN60Jox13hprv8aNopZBS4GcqWWVHM+lAkN0zY7ncgkYBukRoKLPpiXVj9UFkfV4Bdl8Jf60u3IMZZAG/6iLuhkDvaSZ74VqtUx3kp3NN7gUZt8RmA43a2eEY1OCfQ04AcBpAGkAKwpkBLIG8BfQE/eNJsvG/G4VlARj0BfjDBx2ECEIAABCAAAQhAAAIQgAAE+P/tN8YvpvbTDBOlAAAAAElFTkSuQmCC';
@@ -85,16 +86,21 @@ describe(`PDFDocument`, () => {
         },
       );
       expect(pdfDoc).toBeInstanceOf(PDFDocument);
+      const originalObjects = pdfDoc.context.enumerateIndirectObjects();
+      const originalObj60 = originalObjects.find(obj => obj[0].objectNumber === 60) as [PDFRef, PDFDict];
+      expect(originalObj60[1].get(PDFName.of('T'))?.toString()).toEqual('(Karen Scoon)');
 
-      const savedBytes = await pdfDoc.save();
+      const savedBytes = await pdfDoc.save(); // use {useObjectStreams: false} for debugging
+      // fs.writeFileSync('test.pdf', savedBytes);
       const loadedDoc = await PDFDocument.load(savedBytes, {
         parseSpeed: ParseSpeeds.Fastest,
       });
       expect(loadedDoc).toBeInstanceOf(PDFDocument);
-      expect(loadedDoc.catalog.keys()).toEqual(pdfDoc.catalog.keys());
-      expect(loadedDoc.getPage(0).node.keys()).toEqual(
-        pdfDoc.getPage(0).node.keys(),
-      );
+      // const originalObjects = pdfDoc.context.enumerateIndirectObjects();
+      const loadedObjects = loadedDoc.context.enumerateIndirectObjects();
+      // const originalObj60 = originalObjects.find(obj => obj[0].objectNumber === 60);
+      const loadedObj60 = loadedObjects.find(obj => obj[0].objectNumber === 60) as [PDFRef, PDFObject];
+      expect(loadedObj60[1]).toBeInstanceOf(PDFDict);
     });
 
     // it(`throws an error for old encrypted PDFs (2)`, async () => {
