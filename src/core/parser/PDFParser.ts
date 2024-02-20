@@ -224,7 +224,7 @@ class PDFParser extends PDFObjectParser {
       } catch (e) {
         if (!e.message || !e.message.includes('Unknown compression method')) {
           // Error may be thrown if the stream is encrypted, we will decrypt it afterwards
-          console.log(e);
+          // debugger
           // TODO: Add tracing/logging mechanism to track when this happens!
           this.bytes.moveTo(initialOffset);
           this.tryToParseInvalidIndirectObject();

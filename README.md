@@ -1405,34 +1405,7 @@ See also [MAINTAINERSHIP.md#communication](docs/MAINTAINERSHIP.md#communication)
 
 ## Encryption Handling
 
-**`pdf-lib` does not currently support encrypted documents.** You should not use `pdf-lib` with encrypted documents. However, this is a feature that could be added to `pdf-lib`. Please [create an issue](https://github.com/Hopding/pdf-lib/issues/new) if you would find this feature helpful!
-
-When an encrypted document is passed to `PDFDocument.load(...)`, an error will be thrown:
-
-<!-- prettier-ignore -->
-```js
-import { PDFDocument, EncryptedPDFError } from 'pdf-lib'
-
-const encryptedPdfBytes = ...
-
-// Assignment fails. Throws an `EncryptedPDFError`.
-const pdfDoc = PDFDocument.load(encryptedPdfBytes)
-```
-
-This default behavior is usually what you want. It allows you to easily detect if a given document is encrypted, and it prevents you from trying to modify it. However, if you really want to load the document, you can use the `{ ignoreEncryption: true }` option:
-
-```js
-import { PDFDocument } from 'pdf-lib'
-
-const encryptedPdfBytes = ...
-
-// Assignment succeeds. Does not throw an error.
-const pdfDoc = PDFDocument.load(encryptedPdfBytes, { ignoreEncryption: true })
-```
-
-Note that **using this option does not decrypt the document**. This means that any modifications you attempt to make on the returned `PDFDocument` may fail, or have unexpected results.
-
-**You should not use this option.** It only exists for backwards compatibility reasons.
+**`pdf-lib` currently supports encrypted documents.**
 
 ## Contributing
 
