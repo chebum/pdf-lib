@@ -23,7 +23,7 @@ export const stringAsByteArray = (str: string): Uint8Array => {
   const buffer = new Uint8Array(str.length);
   copyStringIntoBuffer(str, buffer, 0);
   return buffer;
-}
+};
 
 export const copyStringIntoBuffer = (
   str: string,
@@ -83,7 +83,7 @@ export const charAtIndex = (text: string, index: number): [string, number] => {
 export const charSplit = (text: string) => {
   const chars: string[] = [];
 
-  for (let idx = 0, len = text.length; idx < len;) {
+  for (let idx = 0, len = text.length; idx < len; ) {
     const [c, cLen] = charAtIndex(text, idx);
     chars.push(c);
     idx += cLen;
@@ -168,11 +168,9 @@ export const parseDate = (dateStr: string): Date | undefined => {
   // http://www.ecma-international.org/ecma-262/5.1/#sec-15.9.1.15
   const tzOffset =
     offsetSign === 'Z' ? 'Z' : `${offsetSign}${offsetHours}:${offsetMins}`;
-  const date = new Date(
+  return new Date(
     `${year}-${month}-${day}T${hours}:${mins}:${secs}${tzOffset}`,
   );
-
-  return date;
 };
 
 export const findLastMatch = (value: string, regex: RegExp) => {

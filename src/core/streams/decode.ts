@@ -1,7 +1,4 @@
-import {
-  UnexpectedObjectTypeError,
-  UnsupportedEncodingError,
-} from 'src/core/errors';
+import { UnexpectedObjectTypeError, UnsupportedEncodingError } from 'src/core/errors';
 import PDFArray from 'src/core/objects/PDFArray';
 import PDFDict from 'src/core/objects/PDFDict';
 import PDFName from 'src/core/objects/PDFName';
@@ -45,7 +42,11 @@ const decodeStream = (
   throw new UnsupportedEncodingError(encoding.asString());
 };
 
-export const decodePDFRawStream = ({ dict, contents, transform }: PDFRawStream) => {
+export const decodePDFRawStream = ({
+  dict,
+  contents,
+  transform,
+}: PDFRawStream) => {
   let stream: StreamType = new Stream(contents);
 
   if (transform) {

@@ -155,13 +155,16 @@ export default class PDFDocument {
       const encryptDict = context.lookup(context.trailerInfo.Encrypt, PDFDict);
       const fileIds = context.lookup(context.trailerInfo.ID, PDFArray);
       if (fileIds) {
-        const cryptoFactory = new CipherTransformFactory(encryptDict, (fileIds.get(0) as PDFHexString).asBytes());
+        const cryptoFactory = new CipherTransformFactory(
+          encryptDict,
+          (fileIds.get(0) as PDFHexString).asBytes(),
+        );
         context = await PDFParser.forBytesWithOptions(
           bytes,
           parseSpeed,
           throwOnInvalidObject,
           capNumbers,
-          cryptoFactory
+          cryptoFactory,
         ).parseDocument();
         delete context.trailerInfo.Encrypt;
       }
@@ -212,7 +215,7 @@ export default class PDFDocument {
   private constructor(
     context: PDFContext,
     ignoreEncryption: boolean,
-    updateMetadata: boolean
+    updateMetadata: boolean,
   ) {
     assertIs(context, 'context', [[PDFContext, 'PDFContext']]);
     assertIs(ignoreEncryption, 'ignoreEncryption', ['boolean']);
@@ -972,11 +975,11 @@ export default class PDFDocument {
       const fontkit = this.assertFontkit();
       embedder = subset
         ? await CustomFontSubsetEmbedder.for(
-          fontkit,
-          bytes,
-          customName,
-          features,
-        )
+            fontkit,
+            bytes,
+            customName,
+            features,
+          )
         : await CustomFontEmbedder.for(fontkit, bytes, customName, features);
     } else {
       throw new TypeError(

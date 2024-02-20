@@ -78,9 +78,12 @@ describe(`PDFDocument`, () => {
     });
 
     it(`automatically decrypts encrypted PDFs if file contains password`, async () => {
-      const pdfDoc = await PDFDocument.load(fs.readFileSync('assets/pdfs/encrypted_3.pdf'), {
-        parseSpeed: ParseSpeeds.Fastest,
-      });
+      const pdfDoc = await PDFDocument.load(
+        fs.readFileSync('assets/pdfs/encrypted_3.pdf'),
+        {
+          parseSpeed: ParseSpeeds.Fastest,
+        },
+      );
       expect(pdfDoc).toBeInstanceOf(PDFDocument);
 
       const savedBytes = await pdfDoc.save();
@@ -89,7 +92,9 @@ describe(`PDFDocument`, () => {
       });
       expect(loadedDoc).toBeInstanceOf(PDFDocument);
       expect(loadedDoc.catalog.keys()).toEqual(pdfDoc.catalog.keys());
-      expect(loadedDoc.getPage(0).node.keys()).toEqual(pdfDoc.getPage(0).node.keys());
+      expect(loadedDoc.getPage(0).node.keys()).toEqual(
+        pdfDoc.getPage(0).node.keys(),
+      );
     });
 
     // it(`throws an error for old encrypted PDFs (2)`, async () => {

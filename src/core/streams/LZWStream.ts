@@ -118,9 +118,9 @@ class LZWStream extends DecodeStream {
           (nextCode + earlyChange) & (nextCode + earlyChange - 1)
             ? codeLength
             : Math.min(
-              Math.log(nextCode + earlyChange) / 0.6931471805599453 + 1,
-              12,
-            ) | 0;
+                Math.log(nextCode + earlyChange) / 0.6931471805599453 + 1,
+                12,
+              ) | 0;
       }
       prevCode = code;
 

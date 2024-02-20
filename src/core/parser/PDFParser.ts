@@ -31,9 +31,15 @@ class PDFParser extends PDFObjectParser {
     objectsPerTick?: number,
     throwOnInvalidObject?: boolean,
     capNumbers?: boolean,
-    cryptoFactory?: CipherTransformFactory
+    cryptoFactory?: CipherTransformFactory,
   ) =>
-    new PDFParser(pdfBytes, objectsPerTick, throwOnInvalidObject, capNumbers, cryptoFactory);
+    new PDFParser(
+      pdfBytes,
+      objectsPerTick,
+      throwOnInvalidObject,
+      capNumbers,
+      cryptoFactory,
+    );
 
   private readonly objectsPerTick: number;
   private readonly throwOnInvalidObject: boolean;
@@ -45,9 +51,14 @@ class PDFParser extends PDFObjectParser {
     objectsPerTick = Infinity,
     throwOnInvalidObject = false,
     capNumbers = false,
-    cryptoFactory?: CipherTransformFactory
+    cryptoFactory?: CipherTransformFactory,
   ) {
-    super(ByteStream.of(pdfBytes), PDFContext.create(), capNumbers, cryptoFactory);
+    super(
+      ByteStream.of(pdfBytes),
+      PDFContext.create(),
+      capNumbers,
+      cryptoFactory,
+    );
     this.objectsPerTick = objectsPerTick;
     this.throwOnInvalidObject = throwOnInvalidObject;
   }
@@ -60,7 +71,7 @@ class PDFParser extends PDFObjectParser {
 
     this.context.header = this.parseHeader();
 
-    let prevOffset;
+    let prevOffset = -1;
     while (!this.bytes.done()) {
       await this.parseDocumentSection();
       const offset = this.bytes.offset();
@@ -165,7 +176,7 @@ class PDFParser extends PDFObjectParser {
     ) {
       await PDFObjectStreamParser.forStream(
         object,
-        this.shouldWaitForTick
+        this.shouldWaitForTick,
       ).parseIntoContext();
     } else if (
       object instanceof PDFRawStream &&

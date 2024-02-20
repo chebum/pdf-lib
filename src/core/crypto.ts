@@ -1,3 +1,4 @@
+/* tslint:disable:max-classes-per-file */
 /* Copyright 2012 Mozilla Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,8 +49,8 @@ class ARCFourCipher {
   }
 
   encryptBlock(data: Uint8Array) {
-    let a = this.a,
-      b = this.b;
+    let a = this.a;
+    let b = this.b;
     const s = this.s;
     const n = data.length;
     const output = new Uint8Array(n);
@@ -76,37 +77,151 @@ class ARCFourCipher {
   }
 }
 
-const calculateMD5 = (function calculateMD5Closure() {
+const calculateMD5 = (() => {
   const r = new Uint8Array([
-    7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 5, 9, 14, 20, 5,
-    9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11,
-    16, 23, 4, 11, 16, 23, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10,
-    15, 21,
+    7,
+    12,
+    17,
+    22,
+    7,
+    12,
+    17,
+    22,
+    7,
+    12,
+    17,
+    22,
+    7,
+    12,
+    17,
+    22,
+    5,
+    9,
+    14,
+    20,
+    5,
+    9,
+    14,
+    20,
+    5,
+    9,
+    14,
+    20,
+    5,
+    9,
+    14,
+    20,
+    4,
+    11,
+    16,
+    23,
+    4,
+    11,
+    16,
+    23,
+    4,
+    11,
+    16,
+    23,
+    4,
+    11,
+    16,
+    23,
+    6,
+    10,
+    15,
+    21,
+    6,
+    10,
+    15,
+    21,
+    6,
+    10,
+    15,
+    21,
+    6,
+    10,
+    15,
+    21,
   ]);
 
   const k = new Int32Array([
-    -680876936, -389564586, 606105819, -1044525330, -176418897, 1200080426,
-    -1473231341, -45705983, 1770035416, -1958414417, -42063, -1990404162,
-    1804603682, -40341101, -1502002290, 1236535329, -165796510, -1069501632,
-    643717713, -373897302, -701558691, 38016083, -660478335, -405537848,
-    568446438, -1019803690, -187363961, 1163531501, -1444681467, -51403784,
-    1735328473, -1926607734, -378558, -2022574463, 1839030562, -35309556,
-    -1530992060, 1272893353, -155497632, -1094730640, 681279174, -358537222,
-    -722521979, 76029189, -640364487, -421815835, 530742520, -995338651,
-    -198630844, 1126891415, -1416354905, -57434055, 1700485571, -1894986606,
-    -1051523, -2054922799, 1873313359, -30611744, -1560198380, 1309151649,
-    -145523070, -1120210379, 718787259, -343485551,
+    -680876936,
+    -389564586,
+    606105819,
+    -1044525330,
+    -176418897,
+    1200080426,
+    -1473231341,
+    -45705983,
+    1770035416,
+    -1958414417,
+    -42063,
+    -1990404162,
+    1804603682,
+    -40341101,
+    -1502002290,
+    1236535329,
+    -165796510,
+    -1069501632,
+    643717713,
+    -373897302,
+    -701558691,
+    38016083,
+    -660478335,
+    -405537848,
+    568446438,
+    -1019803690,
+    -187363961,
+    1163531501,
+    -1444681467,
+    -51403784,
+    1735328473,
+    -1926607734,
+    -378558,
+    -2022574463,
+    1839030562,
+    -35309556,
+    -1530992060,
+    1272893353,
+    -155497632,
+    -1094730640,
+    681279174,
+    -358537222,
+    -722521979,
+    76029189,
+    -640364487,
+    -421815835,
+    530742520,
+    -995338651,
+    -198630844,
+    1126891415,
+    -1416354905,
+    -57434055,
+    1700485571,
+    -1894986606,
+    -1051523,
+    -2054922799,
+    1873313359,
+    -30611744,
+    -1560198380,
+    1309151649,
+    -145523070,
+    -1120210379,
+    718787259,
+    -343485551,
   ]);
 
-  function hash(data: Uint8Array, offset: number, length: number) {
-    let h0 = 1732584193,
-      h1 = -271733879,
-      h2 = -1732584194,
-      h3 = 271733878;
+  return (data: Uint8Array, offset: number, length: number) => {
+    let h0 = 1732584193;
+    let h1 = -271733879;
+    let h2 = -1732584194;
+    let h3 = 271733878;
     // pre-processing
     const paddedLength = (length + 72) & ~63; // data + 9 extra bytes
     const padded = new Uint8Array(paddedLength);
-    let i, j;
+    let i;
+    let j;
     for (i = 0; i < length; ++i) {
       padded[i] = data[offset++];
     }
@@ -124,7 +239,7 @@ const calculateMD5 = (function calculateMD5Closure() {
     padded[i++] = 0;
     padded[i++] = 0;
     const w = new Int32Array(16);
-    for (i = 0; i < paddedLength;) {
+    for (i = 0; i < paddedLength; ) {
       for (j = 0; j < 16; ++j, i += 4) {
         w[j] =
           padded[i] |
@@ -132,12 +247,12 @@ const calculateMD5 = (function calculateMD5Closure() {
           (padded[i + 2] << 16) |
           (padded[i + 3] << 24);
       }
-      let a = h0,
-        b = h1,
-        c = h2,
-        d = h3,
-        f,
-        g;
+      let a = h0;
+      let b = h1;
+      let c = h2;
+      let d = h3;
+      let f;
+      let g;
       for (j = 0; j < 64; ++j) {
         if (j < 16) {
           f = (b & c) | (~b & d);
@@ -152,9 +267,9 @@ const calculateMD5 = (function calculateMD5Closure() {
           f = c ^ (b | ~d);
           g = (7 * j) & 15;
         }
-        const tmp = d,
-          rotateArg = (a + f + k[j] + w[g]) | 0,
-          rotate = r[j];
+        const tmp = d;
+        const rotateArg = (a + f + k[j] + w[g]) | 0;
+        const rotate = r[j];
         d = c;
         c = b;
         b = (b + ((rotateArg << rotate) | (rotateArg >>> (32 - rotate)))) | 0;
@@ -170,11 +285,9 @@ const calculateMD5 = (function calculateMD5Closure() {
       h0 & 0xFF, (h0 >> 8) & 0xFF, (h0 >> 16) & 0xFF, (h0 >>> 24) & 0xFF,
       h1 & 0xFF, (h1 >> 8) & 0xFF, (h1 >> 16) & 0xFF, (h1 >>> 24) & 0xFF,
       h2 & 0xFF, (h2 >> 8) & 0xFF, (h2 >> 16) & 0xFF, (h2 >>> 24) & 0xFF,
-      h3 & 0xFF, (h3 >> 8) & 0xFF, (h3 >> 16) & 0xFF, (h3 >>> 24) & 0xFF
+      h3 & 0xFF, (h3 >> 8) & 0xFF, (h3 >> 16) & 0xFF, (h3 >>> 24) & 0xFF,
     ]);
-  }
-
-  return hash;
+  };
 })();
 
 class Word64 {
@@ -222,7 +335,8 @@ class Word64 {
   }
 
   rotateRight(places: number) {
-    let low, high;
+    let low;
+    let high;
     if (places & 32) {
       high = this.low;
       low = this.high;
@@ -267,63 +381,104 @@ class Word64 {
   }
 }
 
-const calculateSHA256 = (function calculateSHA256Closure() {
-  function rotr(x: number, n: number) {
-    return (x >>> n) | (x << (32 - n));
-  }
+const calculateSHA256 = (() => {
+  const rotr = (x: number, n: number) => (x >>> n) | (x << (32 - n));
 
-  function ch(x: number, y: number, z: number) {
-    return (x & y) ^ (~x & z);
-  }
+  const ch = (x: number, y: number, z: number) => (x & y) ^ (~x & z);
 
-  function maj(x: number, y: number, z: number) {
-    return (x & y) ^ (x & z) ^ (y & z);
-  }
+  const maj = (x: number, y: number, z: number) => (x & y) ^ (x & z) ^ (y & z);
 
-  function sigma(x: number) {
-    return rotr(x, 2) ^ rotr(x, 13) ^ rotr(x, 22);
-  }
+  const sigma = (x: number) => rotr(x, 2) ^ rotr(x, 13) ^ rotr(x, 22);
 
-  function sigmaPrime(x: number) {
-    return rotr(x, 6) ^ rotr(x, 11) ^ rotr(x, 25);
-  }
+  const sigmaPrime = (x: number) => rotr(x, 6) ^ rotr(x, 11) ^ rotr(x, 25);
 
-  function littleSigma(x: number) {
-    return rotr(x, 7) ^ rotr(x, 18) ^ (x >>> 3);
-  }
+  const littleSigma = (x: number) => rotr(x, 7) ^ rotr(x, 18) ^ (x >>> 3);
 
-  function littleSigmaPrime(x: number) {
-    return rotr(x, 17) ^ rotr(x, 19) ^ (x >>> 10);
-  }
+  const littleSigmaPrime = (x: number) =>
+    rotr(x, 17) ^ rotr(x, 19) ^ (x >>> 10);
 
   const k = [
-    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
-    0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
-    0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786,
-    0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
-    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147,
-    0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
-    0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b,
-    0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
-    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a,
-    0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
-    0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
+    0x428a2f98,
+    0x71374491,
+    0xb5c0fbcf,
+    0xe9b5dba5,
+    0x3956c25b,
+    0x59f111f1,
+    0x923f82a4,
+    0xab1c5ed5,
+    0xd807aa98,
+    0x12835b01,
+    0x243185be,
+    0x550c7dc3,
+    0x72be5d74,
+    0x80deb1fe,
+    0x9bdc06a7,
+    0xc19bf174,
+    0xe49b69c1,
+    0xefbe4786,
+    0x0fc19dc6,
+    0x240ca1cc,
+    0x2de92c6f,
+    0x4a7484aa,
+    0x5cb0a9dc,
+    0x76f988da,
+    0x983e5152,
+    0xa831c66d,
+    0xb00327c8,
+    0xbf597fc7,
+    0xc6e00bf3,
+    0xd5a79147,
+    0x06ca6351,
+    0x14292967,
+    0x27b70a85,
+    0x2e1b2138,
+    0x4d2c6dfc,
+    0x53380d13,
+    0x650a7354,
+    0x766a0abb,
+    0x81c2c92e,
+    0x92722c85,
+    0xa2bfe8a1,
+    0xa81a664b,
+    0xc24b8b70,
+    0xc76c51a3,
+    0xd192e819,
+    0xd6990624,
+    0xf40e3585,
+    0x106aa070,
+    0x19a4c116,
+    0x1e376c08,
+    0x2748774c,
+    0x34b0bcb5,
+    0x391c0cb3,
+    0x4ed8aa4a,
+    0x5b9cca4f,
+    0x682e6ff3,
+    0x748f82ee,
+    0x78a5636f,
+    0x84c87814,
+    0x8cc70208,
+    0x90befffa,
+    0xa4506ceb,
+    0xbef9a3f7,
+    0xc67178f2,
   ];
 
-  function hash(data: Uint8Array, offset: number, length: number) {
+  return (data: Uint8Array, offset: number, length: number) => {
     // initial hash values
-    let h0 = 0x6a09e667,
-      h1 = 0xbb67ae85,
-      h2 = 0x3c6ef372,
-      h3 = 0xa54ff53a,
-      h4 = 0x510e527f,
-      h5 = 0x9b05688c,
-      h6 = 0x1f83d9ab,
-      h7 = 0x5be0cd19;
+    let h0 = 0x6a09e667;
+    let h1 = 0xbb67ae85;
+    let h2 = 0x3c6ef372;
+    let h3 = 0xa54ff53a;
+    let h4 = 0x510e527f;
+    let h5 = 0x9b05688c;
+    let h6 = 0x1f83d9ab;
+    let h7 = 0x5be0cd19;
     // pre-processing
     const paddedLength = Math.ceil((length + 9) / 64) * 64;
     const padded = new Uint8Array(paddedLength);
-    let i, j;
+    let i;
+    let j;
     for (i = 0; i < length; ++i) {
       padded[i] = data[offset++];
     }
@@ -342,7 +497,7 @@ const calculateSHA256 = (function calculateSHA256Closure() {
     padded[i++] = (length << 3) & 0xff;
     const w = new Uint32Array(64);
     // for each 512 bit block
-    for (i = 0; i < paddedLength;) {
+    for (i = 0; i < paddedLength; ) {
       for (j = 0; j < 16; ++j) {
         w[j] =
           (padded[i] << 24) |
@@ -360,16 +515,16 @@ const calculateSHA256 = (function calculateSHA256Closure() {
             w[j - 16]) |
           0;
       }
-      let a = h0,
-        b = h1,
-        c = h2,
-        d = h3,
-        e = h4,
-        f = h5,
-        g = h6,
-        h = h7,
-        t1,
-        t2;
+      let a = h0;
+      let b = h1;
+      let c = h2;
+      let d = h3;
+      let e = h4;
+      let f = h5;
+      let g = h6;
+      let h = h7;
+      let t1;
+      let t2;
       for (j = 0; j < 64; ++j) {
         t1 = h + sigmaPrime(e) + ch(e, f, g) + k[j] + w[j];
         t2 = sigma(a) + maj(a, b, c);
@@ -400,24 +555,28 @@ const calculateSHA256 = (function calculateSHA256Closure() {
       (h4 >> 24) & 0xFF, (h4 >> 16) & 0xFF, (h4 >> 8) & 0xFF, (h4) & 0xFF,
       (h5 >> 24) & 0xFF, (h5 >> 16) & 0xFF, (h5 >> 8) & 0xFF, (h5) & 0xFF,
       (h6 >> 24) & 0xFF, (h6 >> 16) & 0xFF, (h6 >> 8) & 0xFF, (h6) & 0xFF,
-      (h7 >> 24) & 0xFF, (h7 >> 16) & 0xFF, (h7 >> 8) & 0xFF, (h7) & 0xFF
+      (h7 >> 24) & 0xFF, (h7 >> 16) & 0xFF, (h7 >> 8) & 0xFF, (h7) & 0xFF,
     ]);
-  }
-
-  return hash;
+  };
 })();
 
-const calculateSHA512 = (function calculateSHA512Closure() {
-  function ch(result: Word64, x: Word64, y: Word64, z: Word64, tmp: Word64) {
+const calculateSHA512 = (() => {
+  const ch = (result: Word64, x: Word64, y: Word64, z: Word64, tmp: Word64) => {
     result.assign(x);
     result.and(y);
     tmp.assign(x);
     tmp.not();
     tmp.and(z);
     result.xor(tmp);
-  }
+  };
 
-  function maj(result: Word64, x: Word64, y: Word64, z: Word64, tmp: Word64) {
+  const maj = (
+    result: Word64,
+    x: Word64,
+    y: Word64,
+    z: Word64,
+    tmp: Word64,
+  ) => {
     result.assign(x);
     result.and(y);
     tmp.assign(x);
@@ -426,9 +585,9 @@ const calculateSHA512 = (function calculateSHA512Closure() {
     tmp.assign(y);
     tmp.and(z);
     result.xor(tmp);
-  }
+  };
 
-  function sigma(result: Word64, x: Word64, tmp: Word64) {
+  const sigma = (result: Word64, x: Word64, tmp: Word64) => {
     result.assign(x);
     result.rotateRight(28);
     tmp.assign(x);
@@ -437,9 +596,9 @@ const calculateSHA512 = (function calculateSHA512Closure() {
     tmp.assign(x);
     tmp.rotateRight(39);
     result.xor(tmp);
-  }
+  };
 
-  function sigmaPrime(result: Word64, x: Word64, tmp: Word64) {
+  const sigmaPrime = (result: Word64, x: Word64, tmp: Word64) => {
     result.assign(x);
     result.rotateRight(14);
     tmp.assign(x);
@@ -448,9 +607,9 @@ const calculateSHA512 = (function calculateSHA512Closure() {
     tmp.assign(x);
     tmp.rotateRight(41);
     result.xor(tmp);
-  }
+  };
 
-  function littleSigma(result: Word64, x: Word64, tmp: Word64) {
+  const littleSigma = (result: Word64, x: Word64, tmp: Word64) => {
     result.assign(x);
     result.rotateRight(1);
     tmp.assign(x);
@@ -459,9 +618,9 @@ const calculateSHA512 = (function calculateSHA512Closure() {
     tmp.assign(x);
     tmp.shiftRight(7);
     result.xor(tmp);
-  }
+  };
 
-  function littleSigmaPrime(result: Word64, x: Word64, tmp: Word64) {
+  const littleSigmaPrime = (result: Word64, x: Word64, tmp: Word64) => {
     result.assign(x);
     result.rotateRight(19);
     tmp.assign(x);
@@ -470,7 +629,7 @@ const calculateSHA512 = (function calculateSHA512Closure() {
     tmp.assign(x);
     tmp.shiftRight(6);
     result.xor(tmp);
-  }
+  };
 
   // prettier-ignore
   const k = [
@@ -515,9 +674,21 @@ const calculateSHA512 = (function calculateSHA512Closure() {
     new Word64(0x4cc5d4be, 0xcb3e42b6), new Word64(0x597f299c, 0xfc657e2a),
     new Word64(0x5fcb6fab, 0x3ad6faec), new Word64(0x6c44198c, 0x4a475817)];
 
-  function hash(data: Uint8Array, offset: number, length: number, mode384: boolean = false) {
+  return (
+    data: Uint8Array,
+    offset: number,
+    length: number,
+    mode384: boolean = false,
+  ) => {
     // initial hash values
-    let h0, h1, h2, h3, h4, h5, h6, h7;
+    let h0;
+    let h1;
+    let h2;
+    let h3;
+    let h4;
+    let h5;
+    let h6;
+    let h7;
     if (!mode384) {
       h0 = new Word64(0x6a09e667, 0xf3bcc908);
       h1 = new Word64(0xbb67ae85, 0x84caa73b);
@@ -543,7 +714,8 @@ const calculateSHA512 = (function calculateSHA512Closure() {
     // pre-processing
     const paddedLength = Math.ceil((length + 17) / 128) * 128;
     const padded = new Uint8Array(paddedLength);
-    let i, j;
+    let i;
+    let j;
     for (i = 0; i < length; ++i) {
       padded[i] = data[offset++];
     }
@@ -573,22 +745,22 @@ const calculateSHA512 = (function calculateSHA512Closure() {
     for (i = 0; i < 80; i++) {
       w[i] = new Word64(0, 0);
     }
-    let a = new Word64(0, 0),
-      b = new Word64(0, 0),
-      c = new Word64(0, 0);
-    let d = new Word64(0, 0),
-      e = new Word64(0, 0),
-      f = new Word64(0, 0);
-    let g = new Word64(0, 0),
-      h = new Word64(0, 0);
-    const t1 = new Word64(0, 0),
-      t2 = new Word64(0, 0);
-    const tmp1 = new Word64(0, 0),
-      tmp2 = new Word64(0, 0);
+    let a = new Word64(0, 0);
+    let b = new Word64(0, 0);
+    let c = new Word64(0, 0);
+    let d = new Word64(0, 0);
+    let e = new Word64(0, 0);
+    let f = new Word64(0, 0);
+    let g = new Word64(0, 0);
+    let h = new Word64(0, 0);
+    const t1 = new Word64(0, 0);
+    const t2 = new Word64(0, 0);
+    const tmp1 = new Word64(0, 0);
+    const tmp2 = new Word64(0, 0);
     let tmp3;
 
     // for each 1024 bit block
-    for (i = 0; i < paddedLength;) {
+    for (i = 0; i < paddedLength; ) {
       for (j = 0; j < 16; ++j) {
         w[j].high =
           (padded[i] << 24) |
@@ -676,14 +848,11 @@ const calculateSHA512 = (function calculateSHA512Closure() {
       h5.copyTo(result, 40);
     }
     return result;
-  }
-
-  return hash;
+  };
 })();
 
-function calculateSHA384(data: Uint8Array, offset: number, length: number) {
-  return calculateSHA512(data, offset, length, /* mode384 = */ true);
-}
+const calculateSHA384 = (data: Uint8Array, offset: number, length: number) =>
+  calculateSHA512(data, offset, length, /* mode384 = */ true);
 
 class NullCipher {
   decryptBlock(data: Uint8Array) {
@@ -700,7 +869,7 @@ class AESBaseCipher {
   protected _keySize!: number;
   protected _key!: Uint8Array;
   protected _cyclesOfRepetition!: number;
-  private _inv_s: Uint8Array;
+  private _invS: Uint8Array;
   private _mix: Uint32Array;
   private _mixCol: Uint8Array;
   buffer: Uint8Array;
@@ -714,99 +883,780 @@ class AESBaseCipher {
     }
 
     this._s = new Uint8Array([
-      0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b,
-      0xfe, 0xd7, 0xab, 0x76, 0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0,
-      0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0, 0xb7, 0xfd, 0x93, 0x26,
-      0x36, 0x3f, 0xf7, 0xcc, 0x34, 0xa5, 0xe5, 0xf1, 0x71, 0xd8, 0x31, 0x15,
-      0x04, 0xc7, 0x23, 0xc3, 0x18, 0x96, 0x05, 0x9a, 0x07, 0x12, 0x80, 0xe2,
-      0xeb, 0x27, 0xb2, 0x75, 0x09, 0x83, 0x2c, 0x1a, 0x1b, 0x6e, 0x5a, 0xa0,
-      0x52, 0x3b, 0xd6, 0xb3, 0x29, 0xe3, 0x2f, 0x84, 0x53, 0xd1, 0x00, 0xed,
-      0x20, 0xfc, 0xb1, 0x5b, 0x6a, 0xcb, 0xbe, 0x39, 0x4a, 0x4c, 0x58, 0xcf,
-      0xd0, 0xef, 0xaa, 0xfb, 0x43, 0x4d, 0x33, 0x85, 0x45, 0xf9, 0x02, 0x7f,
-      0x50, 0x3c, 0x9f, 0xa8, 0x51, 0xa3, 0x40, 0x8f, 0x92, 0x9d, 0x38, 0xf5,
-      0xbc, 0xb6, 0xda, 0x21, 0x10, 0xff, 0xf3, 0xd2, 0xcd, 0x0c, 0x13, 0xec,
-      0x5f, 0x97, 0x44, 0x17, 0xc4, 0xa7, 0x7e, 0x3d, 0x64, 0x5d, 0x19, 0x73,
-      0x60, 0x81, 0x4f, 0xdc, 0x22, 0x2a, 0x90, 0x88, 0x46, 0xee, 0xb8, 0x14,
-      0xde, 0x5e, 0x0b, 0xdb, 0xe0, 0x32, 0x3a, 0x0a, 0x49, 0x06, 0x24, 0x5c,
-      0xc2, 0xd3, 0xac, 0x62, 0x91, 0x95, 0xe4, 0x79, 0xe7, 0xc8, 0x37, 0x6d,
-      0x8d, 0xd5, 0x4e, 0xa9, 0x6c, 0x56, 0xf4, 0xea, 0x65, 0x7a, 0xae, 0x08,
-      0xba, 0x78, 0x25, 0x2e, 0x1c, 0xa6, 0xb4, 0xc6, 0xe8, 0xdd, 0x74, 0x1f,
-      0x4b, 0xbd, 0x8b, 0x8a, 0x70, 0x3e, 0xb5, 0x66, 0x48, 0x03, 0xf6, 0x0e,
-      0x61, 0x35, 0x57, 0xb9, 0x86, 0xc1, 0x1d, 0x9e, 0xe1, 0xf8, 0x98, 0x11,
-      0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf,
-      0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f,
-      0xb0, 0x54, 0xbb, 0x16,
+      0x63,
+      0x7c,
+      0x77,
+      0x7b,
+      0xf2,
+      0x6b,
+      0x6f,
+      0xc5,
+      0x30,
+      0x01,
+      0x67,
+      0x2b,
+      0xfe,
+      0xd7,
+      0xab,
+      0x76,
+      0xca,
+      0x82,
+      0xc9,
+      0x7d,
+      0xfa,
+      0x59,
+      0x47,
+      0xf0,
+      0xad,
+      0xd4,
+      0xa2,
+      0xaf,
+      0x9c,
+      0xa4,
+      0x72,
+      0xc0,
+      0xb7,
+      0xfd,
+      0x93,
+      0x26,
+      0x36,
+      0x3f,
+      0xf7,
+      0xcc,
+      0x34,
+      0xa5,
+      0xe5,
+      0xf1,
+      0x71,
+      0xd8,
+      0x31,
+      0x15,
+      0x04,
+      0xc7,
+      0x23,
+      0xc3,
+      0x18,
+      0x96,
+      0x05,
+      0x9a,
+      0x07,
+      0x12,
+      0x80,
+      0xe2,
+      0xeb,
+      0x27,
+      0xb2,
+      0x75,
+      0x09,
+      0x83,
+      0x2c,
+      0x1a,
+      0x1b,
+      0x6e,
+      0x5a,
+      0xa0,
+      0x52,
+      0x3b,
+      0xd6,
+      0xb3,
+      0x29,
+      0xe3,
+      0x2f,
+      0x84,
+      0x53,
+      0xd1,
+      0x00,
+      0xed,
+      0x20,
+      0xfc,
+      0xb1,
+      0x5b,
+      0x6a,
+      0xcb,
+      0xbe,
+      0x39,
+      0x4a,
+      0x4c,
+      0x58,
+      0xcf,
+      0xd0,
+      0xef,
+      0xaa,
+      0xfb,
+      0x43,
+      0x4d,
+      0x33,
+      0x85,
+      0x45,
+      0xf9,
+      0x02,
+      0x7f,
+      0x50,
+      0x3c,
+      0x9f,
+      0xa8,
+      0x51,
+      0xa3,
+      0x40,
+      0x8f,
+      0x92,
+      0x9d,
+      0x38,
+      0xf5,
+      0xbc,
+      0xb6,
+      0xda,
+      0x21,
+      0x10,
+      0xff,
+      0xf3,
+      0xd2,
+      0xcd,
+      0x0c,
+      0x13,
+      0xec,
+      0x5f,
+      0x97,
+      0x44,
+      0x17,
+      0xc4,
+      0xa7,
+      0x7e,
+      0x3d,
+      0x64,
+      0x5d,
+      0x19,
+      0x73,
+      0x60,
+      0x81,
+      0x4f,
+      0xdc,
+      0x22,
+      0x2a,
+      0x90,
+      0x88,
+      0x46,
+      0xee,
+      0xb8,
+      0x14,
+      0xde,
+      0x5e,
+      0x0b,
+      0xdb,
+      0xe0,
+      0x32,
+      0x3a,
+      0x0a,
+      0x49,
+      0x06,
+      0x24,
+      0x5c,
+      0xc2,
+      0xd3,
+      0xac,
+      0x62,
+      0x91,
+      0x95,
+      0xe4,
+      0x79,
+      0xe7,
+      0xc8,
+      0x37,
+      0x6d,
+      0x8d,
+      0xd5,
+      0x4e,
+      0xa9,
+      0x6c,
+      0x56,
+      0xf4,
+      0xea,
+      0x65,
+      0x7a,
+      0xae,
+      0x08,
+      0xba,
+      0x78,
+      0x25,
+      0x2e,
+      0x1c,
+      0xa6,
+      0xb4,
+      0xc6,
+      0xe8,
+      0xdd,
+      0x74,
+      0x1f,
+      0x4b,
+      0xbd,
+      0x8b,
+      0x8a,
+      0x70,
+      0x3e,
+      0xb5,
+      0x66,
+      0x48,
+      0x03,
+      0xf6,
+      0x0e,
+      0x61,
+      0x35,
+      0x57,
+      0xb9,
+      0x86,
+      0xc1,
+      0x1d,
+      0x9e,
+      0xe1,
+      0xf8,
+      0x98,
+      0x11,
+      0x69,
+      0xd9,
+      0x8e,
+      0x94,
+      0x9b,
+      0x1e,
+      0x87,
+      0xe9,
+      0xce,
+      0x55,
+      0x28,
+      0xdf,
+      0x8c,
+      0xa1,
+      0x89,
+      0x0d,
+      0xbf,
+      0xe6,
+      0x42,
+      0x68,
+      0x41,
+      0x99,
+      0x2d,
+      0x0f,
+      0xb0,
+      0x54,
+      0xbb,
+      0x16,
     ]);
 
-    this._inv_s = new Uint8Array([
-      0x52, 0x09, 0x6a, 0xd5, 0x30, 0x36, 0xa5, 0x38, 0xbf, 0x40, 0xa3, 0x9e,
-      0x81, 0xf3, 0xd7, 0xfb, 0x7c, 0xe3, 0x39, 0x82, 0x9b, 0x2f, 0xff, 0x87,
-      0x34, 0x8e, 0x43, 0x44, 0xc4, 0xde, 0xe9, 0xcb, 0x54, 0x7b, 0x94, 0x32,
-      0xa6, 0xc2, 0x23, 0x3d, 0xee, 0x4c, 0x95, 0x0b, 0x42, 0xfa, 0xc3, 0x4e,
-      0x08, 0x2e, 0xa1, 0x66, 0x28, 0xd9, 0x24, 0xb2, 0x76, 0x5b, 0xa2, 0x49,
-      0x6d, 0x8b, 0xd1, 0x25, 0x72, 0xf8, 0xf6, 0x64, 0x86, 0x68, 0x98, 0x16,
-      0xd4, 0xa4, 0x5c, 0xcc, 0x5d, 0x65, 0xb6, 0x92, 0x6c, 0x70, 0x48, 0x50,
-      0xfd, 0xed, 0xb9, 0xda, 0x5e, 0x15, 0x46, 0x57, 0xa7, 0x8d, 0x9d, 0x84,
-      0x90, 0xd8, 0xab, 0x00, 0x8c, 0xbc, 0xd3, 0x0a, 0xf7, 0xe4, 0x58, 0x05,
-      0xb8, 0xb3, 0x45, 0x06, 0xd0, 0x2c, 0x1e, 0x8f, 0xca, 0x3f, 0x0f, 0x02,
-      0xc1, 0xaf, 0xbd, 0x03, 0x01, 0x13, 0x8a, 0x6b, 0x3a, 0x91, 0x11, 0x41,
-      0x4f, 0x67, 0xdc, 0xea, 0x97, 0xf2, 0xcf, 0xce, 0xf0, 0xb4, 0xe6, 0x73,
-      0x96, 0xac, 0x74, 0x22, 0xe7, 0xad, 0x35, 0x85, 0xe2, 0xf9, 0x37, 0xe8,
-      0x1c, 0x75, 0xdf, 0x6e, 0x47, 0xf1, 0x1a, 0x71, 0x1d, 0x29, 0xc5, 0x89,
-      0x6f, 0xb7, 0x62, 0x0e, 0xaa, 0x18, 0xbe, 0x1b, 0xfc, 0x56, 0x3e, 0x4b,
-      0xc6, 0xd2, 0x79, 0x20, 0x9a, 0xdb, 0xc0, 0xfe, 0x78, 0xcd, 0x5a, 0xf4,
-      0x1f, 0xdd, 0xa8, 0x33, 0x88, 0x07, 0xc7, 0x31, 0xb1, 0x12, 0x10, 0x59,
-      0x27, 0x80, 0xec, 0x5f, 0x60, 0x51, 0x7f, 0xa9, 0x19, 0xb5, 0x4a, 0x0d,
-      0x2d, 0xe5, 0x7a, 0x9f, 0x93, 0xc9, 0x9c, 0xef, 0xa0, 0xe0, 0x3b, 0x4d,
-      0xae, 0x2a, 0xf5, 0xb0, 0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61,
-      0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63,
-      0x55, 0x21, 0x0c, 0x7d,
+    this._invS = new Uint8Array([
+      0x52,
+      0x09,
+      0x6a,
+      0xd5,
+      0x30,
+      0x36,
+      0xa5,
+      0x38,
+      0xbf,
+      0x40,
+      0xa3,
+      0x9e,
+      0x81,
+      0xf3,
+      0xd7,
+      0xfb,
+      0x7c,
+      0xe3,
+      0x39,
+      0x82,
+      0x9b,
+      0x2f,
+      0xff,
+      0x87,
+      0x34,
+      0x8e,
+      0x43,
+      0x44,
+      0xc4,
+      0xde,
+      0xe9,
+      0xcb,
+      0x54,
+      0x7b,
+      0x94,
+      0x32,
+      0xa6,
+      0xc2,
+      0x23,
+      0x3d,
+      0xee,
+      0x4c,
+      0x95,
+      0x0b,
+      0x42,
+      0xfa,
+      0xc3,
+      0x4e,
+      0x08,
+      0x2e,
+      0xa1,
+      0x66,
+      0x28,
+      0xd9,
+      0x24,
+      0xb2,
+      0x76,
+      0x5b,
+      0xa2,
+      0x49,
+      0x6d,
+      0x8b,
+      0xd1,
+      0x25,
+      0x72,
+      0xf8,
+      0xf6,
+      0x64,
+      0x86,
+      0x68,
+      0x98,
+      0x16,
+      0xd4,
+      0xa4,
+      0x5c,
+      0xcc,
+      0x5d,
+      0x65,
+      0xb6,
+      0x92,
+      0x6c,
+      0x70,
+      0x48,
+      0x50,
+      0xfd,
+      0xed,
+      0xb9,
+      0xda,
+      0x5e,
+      0x15,
+      0x46,
+      0x57,
+      0xa7,
+      0x8d,
+      0x9d,
+      0x84,
+      0x90,
+      0xd8,
+      0xab,
+      0x00,
+      0x8c,
+      0xbc,
+      0xd3,
+      0x0a,
+      0xf7,
+      0xe4,
+      0x58,
+      0x05,
+      0xb8,
+      0xb3,
+      0x45,
+      0x06,
+      0xd0,
+      0x2c,
+      0x1e,
+      0x8f,
+      0xca,
+      0x3f,
+      0x0f,
+      0x02,
+      0xc1,
+      0xaf,
+      0xbd,
+      0x03,
+      0x01,
+      0x13,
+      0x8a,
+      0x6b,
+      0x3a,
+      0x91,
+      0x11,
+      0x41,
+      0x4f,
+      0x67,
+      0xdc,
+      0xea,
+      0x97,
+      0xf2,
+      0xcf,
+      0xce,
+      0xf0,
+      0xb4,
+      0xe6,
+      0x73,
+      0x96,
+      0xac,
+      0x74,
+      0x22,
+      0xe7,
+      0xad,
+      0x35,
+      0x85,
+      0xe2,
+      0xf9,
+      0x37,
+      0xe8,
+      0x1c,
+      0x75,
+      0xdf,
+      0x6e,
+      0x47,
+      0xf1,
+      0x1a,
+      0x71,
+      0x1d,
+      0x29,
+      0xc5,
+      0x89,
+      0x6f,
+      0xb7,
+      0x62,
+      0x0e,
+      0xaa,
+      0x18,
+      0xbe,
+      0x1b,
+      0xfc,
+      0x56,
+      0x3e,
+      0x4b,
+      0xc6,
+      0xd2,
+      0x79,
+      0x20,
+      0x9a,
+      0xdb,
+      0xc0,
+      0xfe,
+      0x78,
+      0xcd,
+      0x5a,
+      0xf4,
+      0x1f,
+      0xdd,
+      0xa8,
+      0x33,
+      0x88,
+      0x07,
+      0xc7,
+      0x31,
+      0xb1,
+      0x12,
+      0x10,
+      0x59,
+      0x27,
+      0x80,
+      0xec,
+      0x5f,
+      0x60,
+      0x51,
+      0x7f,
+      0xa9,
+      0x19,
+      0xb5,
+      0x4a,
+      0x0d,
+      0x2d,
+      0xe5,
+      0x7a,
+      0x9f,
+      0x93,
+      0xc9,
+      0x9c,
+      0xef,
+      0xa0,
+      0xe0,
+      0x3b,
+      0x4d,
+      0xae,
+      0x2a,
+      0xf5,
+      0xb0,
+      0xc8,
+      0xeb,
+      0xbb,
+      0x3c,
+      0x83,
+      0x53,
+      0x99,
+      0x61,
+      0x17,
+      0x2b,
+      0x04,
+      0x7e,
+      0xba,
+      0x77,
+      0xd6,
+      0x26,
+      0xe1,
+      0x69,
+      0x14,
+      0x63,
+      0x55,
+      0x21,
+      0x0c,
+      0x7d,
     ]);
 
     this._mix = new Uint32Array([
-      0x00000000, 0x0e090d0b, 0x1c121a16, 0x121b171d, 0x3824342c, 0x362d3927,
-      0x24362e3a, 0x2a3f2331, 0x70486858, 0x7e416553, 0x6c5a724e, 0x62537f45,
-      0x486c5c74, 0x4665517f, 0x547e4662, 0x5a774b69, 0xe090d0b0, 0xee99ddbb,
-      0xfc82caa6, 0xf28bc7ad, 0xd8b4e49c, 0xd6bde997, 0xc4a6fe8a, 0xcaaff381,
-      0x90d8b8e8, 0x9ed1b5e3, 0x8ccaa2fe, 0x82c3aff5, 0xa8fc8cc4, 0xa6f581cf,
-      0xb4ee96d2, 0xbae79bd9, 0xdb3bbb7b, 0xd532b670, 0xc729a16d, 0xc920ac66,
-      0xe31f8f57, 0xed16825c, 0xff0d9541, 0xf104984a, 0xab73d323, 0xa57ade28,
-      0xb761c935, 0xb968c43e, 0x9357e70f, 0x9d5eea04, 0x8f45fd19, 0x814cf012,
-      0x3bab6bcb, 0x35a266c0, 0x27b971dd, 0x29b07cd6, 0x038f5fe7, 0x0d8652ec,
-      0x1f9d45f1, 0x119448fa, 0x4be30393, 0x45ea0e98, 0x57f11985, 0x59f8148e,
-      0x73c737bf, 0x7dce3ab4, 0x6fd52da9, 0x61dc20a2, 0xad766df6, 0xa37f60fd,
-      0xb16477e0, 0xbf6d7aeb, 0x955259da, 0x9b5b54d1, 0x894043cc, 0x87494ec7,
-      0xdd3e05ae, 0xd33708a5, 0xc12c1fb8, 0xcf2512b3, 0xe51a3182, 0xeb133c89,
-      0xf9082b94, 0xf701269f, 0x4de6bd46, 0x43efb04d, 0x51f4a750, 0x5ffdaa5b,
-      0x75c2896a, 0x7bcb8461, 0x69d0937c, 0x67d99e77, 0x3daed51e, 0x33a7d815,
-      0x21bccf08, 0x2fb5c203, 0x058ae132, 0x0b83ec39, 0x1998fb24, 0x1791f62f,
-      0x764dd68d, 0x7844db86, 0x6a5fcc9b, 0x6456c190, 0x4e69e2a1, 0x4060efaa,
-      0x527bf8b7, 0x5c72f5bc, 0x0605bed5, 0x080cb3de, 0x1a17a4c3, 0x141ea9c8,
-      0x3e218af9, 0x302887f2, 0x223390ef, 0x2c3a9de4, 0x96dd063d, 0x98d40b36,
-      0x8acf1c2b, 0x84c61120, 0xaef93211, 0xa0f03f1a, 0xb2eb2807, 0xbce2250c,
-      0xe6956e65, 0xe89c636e, 0xfa877473, 0xf48e7978, 0xdeb15a49, 0xd0b85742,
-      0xc2a3405f, 0xccaa4d54, 0x41ecdaf7, 0x4fe5d7fc, 0x5dfec0e1, 0x53f7cdea,
-      0x79c8eedb, 0x77c1e3d0, 0x65daf4cd, 0x6bd3f9c6, 0x31a4b2af, 0x3fadbfa4,
-      0x2db6a8b9, 0x23bfa5b2, 0x09808683, 0x07898b88, 0x15929c95, 0x1b9b919e,
-      0xa17c0a47, 0xaf75074c, 0xbd6e1051, 0xb3671d5a, 0x99583e6b, 0x97513360,
-      0x854a247d, 0x8b432976, 0xd134621f, 0xdf3d6f14, 0xcd267809, 0xc32f7502,
-      0xe9105633, 0xe7195b38, 0xf5024c25, 0xfb0b412e, 0x9ad7618c, 0x94de6c87,
-      0x86c57b9a, 0x88cc7691, 0xa2f355a0, 0xacfa58ab, 0xbee14fb6, 0xb0e842bd,
-      0xea9f09d4, 0xe49604df, 0xf68d13c2, 0xf8841ec9, 0xd2bb3df8, 0xdcb230f3,
-      0xcea927ee, 0xc0a02ae5, 0x7a47b13c, 0x744ebc37, 0x6655ab2a, 0x685ca621,
-      0x42638510, 0x4c6a881b, 0x5e719f06, 0x5078920d, 0x0a0fd964, 0x0406d46f,
-      0x161dc372, 0x1814ce79, 0x322bed48, 0x3c22e043, 0x2e39f75e, 0x2030fa55,
-      0xec9ab701, 0xe293ba0a, 0xf088ad17, 0xfe81a01c, 0xd4be832d, 0xdab78e26,
-      0xc8ac993b, 0xc6a59430, 0x9cd2df59, 0x92dbd252, 0x80c0c54f, 0x8ec9c844,
-      0xa4f6eb75, 0xaaffe67e, 0xb8e4f163, 0xb6edfc68, 0x0c0a67b1, 0x02036aba,
-      0x10187da7, 0x1e1170ac, 0x342e539d, 0x3a275e96, 0x283c498b, 0x26354480,
-      0x7c420fe9, 0x724b02e2, 0x605015ff, 0x6e5918f4, 0x44663bc5, 0x4a6f36ce,
-      0x587421d3, 0x567d2cd8, 0x37a10c7a, 0x39a80171, 0x2bb3166c, 0x25ba1b67,
-      0x0f853856, 0x018c355d, 0x13972240, 0x1d9e2f4b, 0x47e96422, 0x49e06929,
-      0x5bfb7e34, 0x55f2733f, 0x7fcd500e, 0x71c45d05, 0x63df4a18, 0x6dd64713,
-      0xd731dcca, 0xd938d1c1, 0xcb23c6dc, 0xc52acbd7, 0xef15e8e6, 0xe11ce5ed,
-      0xf307f2f0, 0xfd0efffb, 0xa779b492, 0xa970b999, 0xbb6bae84, 0xb562a38f,
-      0x9f5d80be, 0x91548db5, 0x834f9aa8, 0x8d4697a3,
+      0x00000000,
+      0x0e090d0b,
+      0x1c121a16,
+      0x121b171d,
+      0x3824342c,
+      0x362d3927,
+      0x24362e3a,
+      0x2a3f2331,
+      0x70486858,
+      0x7e416553,
+      0x6c5a724e,
+      0x62537f45,
+      0x486c5c74,
+      0x4665517f,
+      0x547e4662,
+      0x5a774b69,
+      0xe090d0b0,
+      0xee99ddbb,
+      0xfc82caa6,
+      0xf28bc7ad,
+      0xd8b4e49c,
+      0xd6bde997,
+      0xc4a6fe8a,
+      0xcaaff381,
+      0x90d8b8e8,
+      0x9ed1b5e3,
+      0x8ccaa2fe,
+      0x82c3aff5,
+      0xa8fc8cc4,
+      0xa6f581cf,
+      0xb4ee96d2,
+      0xbae79bd9,
+      0xdb3bbb7b,
+      0xd532b670,
+      0xc729a16d,
+      0xc920ac66,
+      0xe31f8f57,
+      0xed16825c,
+      0xff0d9541,
+      0xf104984a,
+      0xab73d323,
+      0xa57ade28,
+      0xb761c935,
+      0xb968c43e,
+      0x9357e70f,
+      0x9d5eea04,
+      0x8f45fd19,
+      0x814cf012,
+      0x3bab6bcb,
+      0x35a266c0,
+      0x27b971dd,
+      0x29b07cd6,
+      0x038f5fe7,
+      0x0d8652ec,
+      0x1f9d45f1,
+      0x119448fa,
+      0x4be30393,
+      0x45ea0e98,
+      0x57f11985,
+      0x59f8148e,
+      0x73c737bf,
+      0x7dce3ab4,
+      0x6fd52da9,
+      0x61dc20a2,
+      0xad766df6,
+      0xa37f60fd,
+      0xb16477e0,
+      0xbf6d7aeb,
+      0x955259da,
+      0x9b5b54d1,
+      0x894043cc,
+      0x87494ec7,
+      0xdd3e05ae,
+      0xd33708a5,
+      0xc12c1fb8,
+      0xcf2512b3,
+      0xe51a3182,
+      0xeb133c89,
+      0xf9082b94,
+      0xf701269f,
+      0x4de6bd46,
+      0x43efb04d,
+      0x51f4a750,
+      0x5ffdaa5b,
+      0x75c2896a,
+      0x7bcb8461,
+      0x69d0937c,
+      0x67d99e77,
+      0x3daed51e,
+      0x33a7d815,
+      0x21bccf08,
+      0x2fb5c203,
+      0x058ae132,
+      0x0b83ec39,
+      0x1998fb24,
+      0x1791f62f,
+      0x764dd68d,
+      0x7844db86,
+      0x6a5fcc9b,
+      0x6456c190,
+      0x4e69e2a1,
+      0x4060efaa,
+      0x527bf8b7,
+      0x5c72f5bc,
+      0x0605bed5,
+      0x080cb3de,
+      0x1a17a4c3,
+      0x141ea9c8,
+      0x3e218af9,
+      0x302887f2,
+      0x223390ef,
+      0x2c3a9de4,
+      0x96dd063d,
+      0x98d40b36,
+      0x8acf1c2b,
+      0x84c61120,
+      0xaef93211,
+      0xa0f03f1a,
+      0xb2eb2807,
+      0xbce2250c,
+      0xe6956e65,
+      0xe89c636e,
+      0xfa877473,
+      0xf48e7978,
+      0xdeb15a49,
+      0xd0b85742,
+      0xc2a3405f,
+      0xccaa4d54,
+      0x41ecdaf7,
+      0x4fe5d7fc,
+      0x5dfec0e1,
+      0x53f7cdea,
+      0x79c8eedb,
+      0x77c1e3d0,
+      0x65daf4cd,
+      0x6bd3f9c6,
+      0x31a4b2af,
+      0x3fadbfa4,
+      0x2db6a8b9,
+      0x23bfa5b2,
+      0x09808683,
+      0x07898b88,
+      0x15929c95,
+      0x1b9b919e,
+      0xa17c0a47,
+      0xaf75074c,
+      0xbd6e1051,
+      0xb3671d5a,
+      0x99583e6b,
+      0x97513360,
+      0x854a247d,
+      0x8b432976,
+      0xd134621f,
+      0xdf3d6f14,
+      0xcd267809,
+      0xc32f7502,
+      0xe9105633,
+      0xe7195b38,
+      0xf5024c25,
+      0xfb0b412e,
+      0x9ad7618c,
+      0x94de6c87,
+      0x86c57b9a,
+      0x88cc7691,
+      0xa2f355a0,
+      0xacfa58ab,
+      0xbee14fb6,
+      0xb0e842bd,
+      0xea9f09d4,
+      0xe49604df,
+      0xf68d13c2,
+      0xf8841ec9,
+      0xd2bb3df8,
+      0xdcb230f3,
+      0xcea927ee,
+      0xc0a02ae5,
+      0x7a47b13c,
+      0x744ebc37,
+      0x6655ab2a,
+      0x685ca621,
+      0x42638510,
+      0x4c6a881b,
+      0x5e719f06,
+      0x5078920d,
+      0x0a0fd964,
+      0x0406d46f,
+      0x161dc372,
+      0x1814ce79,
+      0x322bed48,
+      0x3c22e043,
+      0x2e39f75e,
+      0x2030fa55,
+      0xec9ab701,
+      0xe293ba0a,
+      0xf088ad17,
+      0xfe81a01c,
+      0xd4be832d,
+      0xdab78e26,
+      0xc8ac993b,
+      0xc6a59430,
+      0x9cd2df59,
+      0x92dbd252,
+      0x80c0c54f,
+      0x8ec9c844,
+      0xa4f6eb75,
+      0xaaffe67e,
+      0xb8e4f163,
+      0xb6edfc68,
+      0x0c0a67b1,
+      0x02036aba,
+      0x10187da7,
+      0x1e1170ac,
+      0x342e539d,
+      0x3a275e96,
+      0x283c498b,
+      0x26354480,
+      0x7c420fe9,
+      0x724b02e2,
+      0x605015ff,
+      0x6e5918f4,
+      0x44663bc5,
+      0x4a6f36ce,
+      0x587421d3,
+      0x567d2cd8,
+      0x37a10c7a,
+      0x39a80171,
+      0x2bb3166c,
+      0x25ba1b67,
+      0x0f853856,
+      0x018c355d,
+      0x13972240,
+      0x1d9e2f4b,
+      0x47e96422,
+      0x49e06929,
+      0x5bfb7e34,
+      0x55f2733f,
+      0x7fcd500e,
+      0x71c45d05,
+      0x63df4a18,
+      0x6dd64713,
+      0xd731dcca,
+      0xd938d1c1,
+      0xcb23c6dc,
+      0xc52acbd7,
+      0xef15e8e6,
+      0xe11ce5ed,
+      0xf307f2f0,
+      0xfd0efffb,
+      0xa779b492,
+      0xa970b999,
+      0xbb6bae84,
+      0xb562a38f,
+      0x9f5d80be,
+      0x91548db5,
+      0x834f9aa8,
+      0x8d4697a3,
     ]);
 
     this._mixCol = new Uint8Array(256);
@@ -827,7 +1677,9 @@ class AESBaseCipher {
   }
 
   _decrypt(input: Uint8Array, key: Uint8Array) {
-    let t, u, v;
+    let t;
+    let u;
+    let v;
     const state = new Uint8Array(16);
     state.set(input);
 
@@ -857,7 +1709,7 @@ class AESBaseCipher {
       state[3] = v;
       // InvSubBytes
       for (let j = 0; j < 16; ++j) {
-        state[j] = this._inv_s[state[j]];
+        state[j] = this._invS[state[j]];
       }
       // AddRoundKey
       for (let j = 0, k = i * 16; j < 16; ++j, ++k) {
@@ -904,7 +1756,7 @@ class AESBaseCipher {
     state[3] = v;
     for (let j = 0; j < 16; ++j) {
       // InvSubBytes
-      state[j] = this._inv_s[state[j]];
+      state[j] = this._invS[state[j]];
       // AddRoundKey
       state[j] ^= key[j];
     }
@@ -914,7 +1766,9 @@ class AESBaseCipher {
   _encrypt(input: Uint8Array, key: Uint8Array) {
     const s = this._s;
 
-    let t, u, v;
+    let t;
+    let u;
+    let v;
     const state = new Uint8Array(16);
     state.set(input);
 
@@ -997,8 +1851,8 @@ class AESBaseCipher {
 
   _decryptBlock2(data: Uint8Array, finalize: boolean) {
     const sourceLength = data.length;
-    let buffer = this.buffer,
-      bufferLength = this.bufferPosition;
+    let buffer = this.buffer;
+    let bufferLength = this.bufferPosition;
     const result: Uint8Array[] = [];
     let iv = this.iv;
 
@@ -1051,7 +1905,11 @@ class AESBaseCipher {
     return output;
   }
 
-  decryptBlock(data: Uint8Array, finalize: boolean, iv?: Uint8Array): Uint8Array {
+  decryptBlock(
+    data: Uint8Array,
+    finalize: boolean,
+    iv?: Uint8Array,
+  ): Uint8Array {
     const sourceLength = data.length;
     const buffer = this.buffer;
     let bufferLength = this.bufferPosition;
@@ -1084,8 +1942,8 @@ class AESBaseCipher {
 
   encrypt(data: Uint8Array, iv: Uint8Array) {
     const sourceLength = data.length;
-    let buffer = this.buffer,
-      bufferLength = this.bufferPosition;
+    let buffer = this.buffer;
+    let bufferLength = this.bufferPosition;
     const result = [];
 
     if (!iv) {
@@ -1136,28 +1994,262 @@ class AES128Cipher extends AESBaseCipher {
     this._keySize = 160; // bits
 
     this._rcon = new Uint8Array([
-      0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c,
-      0xd8, 0xab, 0x4d, 0x9a, 0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35, 0x6a,
-      0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd,
-      0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a,
-      0x74, 0xe8, 0xcb, 0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80,
-      0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a, 0x2f, 0x5e, 0xbc, 0x63, 0xc6,
-      0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39, 0x72,
-      0xe4, 0xd3, 0xbd, 0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc,
-      0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d, 0x01, 0x02, 0x04, 0x08, 0x10,
-      0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a, 0x2f, 0x5e,
-      0xbc, 0x63, 0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5,
-      0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd, 0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94,
-      0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d, 0x01, 0x02,
-      0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d,
-      0x9a, 0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d,
-      0xfa, 0xef, 0xc5, 0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd, 0x61, 0xc2, 0x9f,
-      0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb,
-      0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c,
-      0xd8, 0xab, 0x4d, 0x9a, 0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35, 0x6a,
-      0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd,
-      0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a,
-      0x74, 0xe8, 0xcb, 0x8d,
+      0x8d,
+      0x01,
+      0x02,
+      0x04,
+      0x08,
+      0x10,
+      0x20,
+      0x40,
+      0x80,
+      0x1b,
+      0x36,
+      0x6c,
+      0xd8,
+      0xab,
+      0x4d,
+      0x9a,
+      0x2f,
+      0x5e,
+      0xbc,
+      0x63,
+      0xc6,
+      0x97,
+      0x35,
+      0x6a,
+      0xd4,
+      0xb3,
+      0x7d,
+      0xfa,
+      0xef,
+      0xc5,
+      0x91,
+      0x39,
+      0x72,
+      0xe4,
+      0xd3,
+      0xbd,
+      0x61,
+      0xc2,
+      0x9f,
+      0x25,
+      0x4a,
+      0x94,
+      0x33,
+      0x66,
+      0xcc,
+      0x83,
+      0x1d,
+      0x3a,
+      0x74,
+      0xe8,
+      0xcb,
+      0x8d,
+      0x01,
+      0x02,
+      0x04,
+      0x08,
+      0x10,
+      0x20,
+      0x40,
+      0x80,
+      0x1b,
+      0x36,
+      0x6c,
+      0xd8,
+      0xab,
+      0x4d,
+      0x9a,
+      0x2f,
+      0x5e,
+      0xbc,
+      0x63,
+      0xc6,
+      0x97,
+      0x35,
+      0x6a,
+      0xd4,
+      0xb3,
+      0x7d,
+      0xfa,
+      0xef,
+      0xc5,
+      0x91,
+      0x39,
+      0x72,
+      0xe4,
+      0xd3,
+      0xbd,
+      0x61,
+      0xc2,
+      0x9f,
+      0x25,
+      0x4a,
+      0x94,
+      0x33,
+      0x66,
+      0xcc,
+      0x83,
+      0x1d,
+      0x3a,
+      0x74,
+      0xe8,
+      0xcb,
+      0x8d,
+      0x01,
+      0x02,
+      0x04,
+      0x08,
+      0x10,
+      0x20,
+      0x40,
+      0x80,
+      0x1b,
+      0x36,
+      0x6c,
+      0xd8,
+      0xab,
+      0x4d,
+      0x9a,
+      0x2f,
+      0x5e,
+      0xbc,
+      0x63,
+      0xc6,
+      0x97,
+      0x35,
+      0x6a,
+      0xd4,
+      0xb3,
+      0x7d,
+      0xfa,
+      0xef,
+      0xc5,
+      0x91,
+      0x39,
+      0x72,
+      0xe4,
+      0xd3,
+      0xbd,
+      0x61,
+      0xc2,
+      0x9f,
+      0x25,
+      0x4a,
+      0x94,
+      0x33,
+      0x66,
+      0xcc,
+      0x83,
+      0x1d,
+      0x3a,
+      0x74,
+      0xe8,
+      0xcb,
+      0x8d,
+      0x01,
+      0x02,
+      0x04,
+      0x08,
+      0x10,
+      0x20,
+      0x40,
+      0x80,
+      0x1b,
+      0x36,
+      0x6c,
+      0xd8,
+      0xab,
+      0x4d,
+      0x9a,
+      0x2f,
+      0x5e,
+      0xbc,
+      0x63,
+      0xc6,
+      0x97,
+      0x35,
+      0x6a,
+      0xd4,
+      0xb3,
+      0x7d,
+      0xfa,
+      0xef,
+      0xc5,
+      0x91,
+      0x39,
+      0x72,
+      0xe4,
+      0xd3,
+      0xbd,
+      0x61,
+      0xc2,
+      0x9f,
+      0x25,
+      0x4a,
+      0x94,
+      0x33,
+      0x66,
+      0xcc,
+      0x83,
+      0x1d,
+      0x3a,
+      0x74,
+      0xe8,
+      0xcb,
+      0x8d,
+      0x01,
+      0x02,
+      0x04,
+      0x08,
+      0x10,
+      0x20,
+      0x40,
+      0x80,
+      0x1b,
+      0x36,
+      0x6c,
+      0xd8,
+      0xab,
+      0x4d,
+      0x9a,
+      0x2f,
+      0x5e,
+      0xbc,
+      0x63,
+      0xc6,
+      0x97,
+      0x35,
+      0x6a,
+      0xd4,
+      0xb3,
+      0x7d,
+      0xfa,
+      0xef,
+      0xc5,
+      0x91,
+      0x39,
+      0x72,
+      0xe4,
+      0xd3,
+      0xbd,
+      0x61,
+      0xc2,
+      0x9f,
+      0x25,
+      0x4a,
+      0x94,
+      0x33,
+      0x66,
+      0xcc,
+      0x83,
+      0x1d,
+      0x3a,
+      0x74,
+      0xe8,
+      0xcb,
+      0x8d,
     ]);
 
     this._key = this._expandKey(key);
@@ -1217,7 +2309,10 @@ class AES256Cipher extends AESBaseCipher {
     result.set(cipherKey);
 
     let r = 1;
-    let t1 = 0, t2 = 0, t3 = 0, t4 = 0;
+    let t1 = 0;
+    let t2 = 0;
+    let t3 = 0;
+    let t4 = 0;
     for (let j = 32, i = 1; j < b; ++i) {
       if (j % 32 === 16) {
         t1 = s[t1];
@@ -1237,6 +2332,7 @@ class AES256Cipher extends AESBaseCipher {
         t4 = s[t4];
         // Rcon
         t1 ^= r;
+        // tslint:disable-next-line:no-conditional-assignment
         if ((r <<= 1) >= 256) {
           r = (r ^ 0x1b) & 0xff;
         }
@@ -1258,7 +2354,12 @@ class AES256Cipher extends AESBaseCipher {
 }
 
 class PDF17 {
-  checkOwnerPassword(password: Uint8Array, ownerValidationSalt: Uint8Array, userBytes: Uint8Array, ownerPassword: Uint8Array) {
+  checkOwnerPassword(
+    password: Uint8Array,
+    ownerValidationSalt: Uint8Array,
+    userBytes: Uint8Array,
+    ownerPassword: Uint8Array,
+  ) {
     const hashData = new Uint8Array(password.length + 56);
     hashData.set(password, 0);
     hashData.set(ownerValidationSalt, password.length);
@@ -1267,7 +2368,11 @@ class PDF17 {
     return isArrayEqual(result, ownerPassword);
   }
 
-  checkUserPassword(password: Uint8Array, userValidationSalt: Uint8Array, userPassword: Uint8Array) {
+  checkUserPassword(
+    password: Uint8Array,
+    userValidationSalt: Uint8Array,
+    userPassword: Uint8Array,
+  ) {
     const hashData = new Uint8Array(password.length + 8);
     hashData.set(password, 0);
     hashData.set(userValidationSalt, password.length);
@@ -1275,7 +2380,12 @@ class PDF17 {
     return isArrayEqual(result, userPassword);
   }
 
-  getOwnerKey(password: Uint8Array, ownerKeySalt: Uint8Array, userBytes: Uint8Array, ownerEncryption: Uint8Array) {
+  getOwnerKey(
+    password: Uint8Array,
+    ownerKeySalt: Uint8Array,
+    userBytes: Uint8Array,
+    ownerEncryption: Uint8Array,
+  ) {
     const hashData = new Uint8Array(password.length + 56);
     hashData.set(password, 0);
     hashData.set(ownerKeySalt, password.length);
@@ -1285,7 +2395,11 @@ class PDF17 {
     return cipher.decryptBlock(ownerEncryption, false, new Uint8Array(16));
   }
 
-  getUserKey(password: Uint8Array, userKeySalt: Uint8Array, userEncryption: Uint8Array) {
+  getUserKey(
+    password: Uint8Array,
+    userKeySalt: Uint8Array,
+    userEncryption: Uint8Array,
+  ) {
     const hashData = new Uint8Array(password.length + 8);
     hashData.set(password, 0);
     hashData.set(userKeySalt, password.length);
@@ -1297,14 +2411,18 @@ class PDF17 {
 }
 
 class PDF20 {
-  calculatePDF20Hash(password: Uint8Array, input: Uint8Array, userBytes: Uint8Array) {
+  calculatePDF20Hash(
+    password: Uint8Array,
+    input: Uint8Array,
+    userBytes: Uint8Array,
+  ) {
     // This refers to Algorithm 2.B as defined in ISO 32000-2.
     let k = calculateSHA256(input, 0, input.length).subarray(0, 32);
     let e: Uint8Array = new Uint8Array([0]);
     let i = 0;
     while (i < 64 || e[e.length - 1] > i - 32) {
-      const combinedLength = password.length + k.length + userBytes.length,
-        combinedArray = new Uint8Array(combinedLength);
+      const combinedLength = password.length + k.length + userBytes.length;
+      const combinedArray = new Uint8Array(combinedLength);
       let writeOffset = 0;
       combinedArray.set(password, writeOffset);
       writeOffset += password.length;
@@ -1347,7 +2465,7 @@ class PDF20 {
     password: Uint8Array,
     ownerValidationSalt: Uint8Array,
     userBytes: Uint8Array,
-    ownerPassword: Uint8Array
+    ownerPassword: Uint8Array,
   ) {
     const hashData = new Uint8Array(password.length + 56);
     hashData.set(password, 0);
@@ -1357,15 +2475,28 @@ class PDF20 {
     return isArrayEqual(result, ownerPassword);
   }
 
-  checkUserPassword(password: Uint8Array, userValidationSalt: Uint8Array, userPassword: Uint8Array) {
+  checkUserPassword(
+    password: Uint8Array,
+    userValidationSalt: Uint8Array,
+    userPassword: Uint8Array,
+  ) {
     const hashData = new Uint8Array(password.length + 8);
     hashData.set(password, 0);
     hashData.set(userValidationSalt, password.length);
-    const result = this.calculatePDF20Hash(password, hashData, new Uint8Array());
+    const result = this.calculatePDF20Hash(
+      password,
+      hashData,
+      new Uint8Array(),
+    );
     return isArrayEqual(result, userPassword);
   }
 
-  getOwnerKey(password: Uint8Array, ownerKeySalt: Uint8Array, userBytes: Uint8Array, ownerEncryption: Uint8Array) {
+  getOwnerKey(
+    password: Uint8Array,
+    ownerKeySalt: Uint8Array,
+    userBytes: Uint8Array,
+    ownerEncryption: Uint8Array,
+  ) {
     const hashData = new Uint8Array(password.length + 56);
     hashData.set(password, 0);
     hashData.set(ownerKeySalt, password.length);
@@ -1375,7 +2506,11 @@ class PDF20 {
     return cipher.decryptBlock(ownerEncryption, false, new Uint8Array(16));
   }
 
-  getUserKey(password: Uint8Array, userKeySalt: Uint8Array, userEncryption: Uint8Array) {
+  getUserKey(
+    password: Uint8Array,
+    userKeySalt: Uint8Array,
+    userEncryption: Uint8Array,
+  ) {
     const hashData = new Uint8Array(password.length + 8);
     hashData.set(password, 0);
     hashData.set(userKeySalt, password.length);
@@ -1399,9 +2534,7 @@ class CipherTransform {
     const cipher = new this.StreamCipherConstructor();
     return new DecryptStream(
       stream,
-      function cipherTransformDecryptStream(data, finalize) {
-        return cipher.decryptBlock(data, finalize);
-      },
+      (data, finalize) => cipher.decryptBlock(data, finalize),
       length,
     );
   }
@@ -1441,6 +2574,7 @@ class CipherTransform {
         }
       }
 
+      // tslint:disable-next-line:no-shadowed-variable
       let data = stringAsByteArray(s);
       data = cipher.encrypt(data, iv);
 
@@ -1470,9 +2604,38 @@ class CipherTransformFactory {
   eff!: PDFName;
 
   private defaultPasswordBytes = new Uint8Array([
-    0x28, 0xbf, 0x4e, 0x5e, 0x4e, 0x75, 0x8a, 0x41, 0x64, 0x00, 0x4e, 0x56,
-    0xff, 0xfa, 0x01, 0x08, 0x2e, 0x2e, 0x00, 0xb6, 0xd0, 0x68, 0x3e, 0x80,
-    0x2f, 0x0c, 0xa9, 0xfe, 0x64, 0x53, 0x69, 0x7a,
+    0x28,
+    0xbf,
+    0x4e,
+    0x5e,
+    0x4e,
+    0x75,
+    0x8a,
+    0x41,
+    0x64,
+    0x00,
+    0x4e,
+    0x56,
+    0xff,
+    0xfa,
+    0x01,
+    0x08,
+    0x2e,
+    0x2e,
+    0x00,
+    0xb6,
+    0xd0,
+    0x68,
+    0x3e,
+    0x80,
+    0x2f,
+    0x0c,
+    0xa9,
+    0xfe,
+    0x64,
+    0x53,
+    0x69,
+    0x7a,
   ]);
   private identityName = PDFName.of('Identity');
 
@@ -1486,10 +2649,7 @@ class CipherTransformFactory {
     const algorithm = (dict.get(PDFName.of('V')) as PDFNumber).asNumber();
     if (
       !Number.isInteger(algorithm) ||
-      (algorithm !== 1 &&
-        algorithm !== 2 &&
-        algorithm !== 4 &&
-        algorithm !== 5)
+      (algorithm !== 1 && algorithm !== 2 && algorithm !== 4 && algorithm !== 5)
     ) {
       throw new Error('unsupported encryption algorithm');
     }
@@ -1508,7 +2668,9 @@ class CipherTransformFactory {
         const streamCryptoName = dict.get(PDFName.of('StmF')) as PDFName;
         if (cfDict instanceof PDFDict && streamCryptoName instanceof PDFName) {
           cfDict.suppressEncryption = true;
-          const handlerDict = cfDict.get(PDFName.of(streamCryptoName.asString())) as PDFDict;
+          const handlerDict = cfDict.get(
+            PDFName.of(streamCryptoName.asString()),
+          ) as PDFDict;
           let keyLen: PDFNumber | null = null;
           if (handlerDict) {
             keyLen = handlerDict.get(PDFName.of('Length')) as PDFNumber;
@@ -1522,11 +2684,7 @@ class CipherTransformFactory {
         }
       }
     }
-    if (
-      !Number.isInteger(keyLength) ||
-      keyLength < 40 ||
-      keyLength % 8 !== 0
-    ) {
+    if (!Number.isInteger(keyLength) || keyLength < 40 || keyLength % 8 !== 0) {
       throw new Error('invalid key length');
     }
 
@@ -1553,7 +2711,7 @@ class CipherTransformFactory {
         } catch (ex) {
           console.warn(
             'CipherTransformFactory: ' +
-            'Unable to convert UTF8 encoded password.'
+              'Unable to convert UTF8 encoded password.',
           );
         }
       }
@@ -1570,23 +2728,21 @@ class CipherTransformFactory {
         flags,
         revision,
         keyLength,
-        encryptMetadata
+        encryptMetadata,
       );
     } else {
-      const ownerValidationSalt = oPdfStr.subarray(
-        32,
-        40
-      );
+      const ownerValidationSalt = oPdfStr.subarray(32, 40);
       const ownerKeySalt = oPdfStr.subarray(40, 48);
       const uBytes = uPdfStr.subarray(0, 48);
-      const userValidationSalt = uPdfStr.subarray(
-        32,
-        40
-      );
+      const userValidationSalt = uPdfStr.subarray(32, 40);
       const userKeySalt = uPdfStr.subarray(40, 48);
 
-      const ownerEncryption = (dict.get(PDFName.of('OE')) as PDFString).asBytes();
-      const userEncryption = (dict.get(PDFName.of('UE')) as PDFString).asBytes();
+      const ownerEncryption = (dict.get(
+        PDFName.of('OE'),
+      ) as PDFString).asBytes();
+      const userEncryption = (dict.get(
+        PDFName.of('UE'),
+      ) as PDFString).asBytes();
       const perms = (dict.get(PDFName.of('Perms')) as PDFString).asBytes();
       encryptionKey = this.createEncryptionKey20(
         revision,
@@ -1600,7 +2756,7 @@ class CipherTransformFactory {
         userKeySalt,
         ownerEncryption,
         userEncryption,
-        perms
+        perms,
       );
     }
     if (!encryptionKey && !password) {
@@ -1611,7 +2767,7 @@ class CipherTransformFactory {
         passwordBytes!,
         ownerPassword,
         revision,
-        keyLength
+        keyLength,
       );
       encryptionKey = this.prepareKeyData(
         fileIdBytes,
@@ -1621,7 +2777,7 @@ class CipherTransformFactory {
         flags,
         revision,
         keyLength,
-        encryptMetadata
+        encryptMetadata,
       );
     }
 
@@ -1641,9 +2797,11 @@ class CipherTransformFactory {
         cf.suppressEncryption = true;
       }
       this.cf = cf;
-      this.stmf = dict.get(PDFName.of('StmF')) as PDFName || this.identityName;
-      this.strf = dict.get(PDFName.of('StrF')) as PDFName || this.identityName;
-      this.eff = dict.get(PDFName.of('EFF')) as PDFName || this.stmf;
+      this.stmf =
+        (dict.get(PDFName.of('StmF')) as PDFName) || this.identityName;
+      this.strf =
+        (dict.get(PDFName.of('StrF')) as PDFName) || this.identityName;
+      this.eff = (dict.get(PDFName.of('EFF')) as PDFName) || this.stmf;
     }
   }
 
@@ -1655,15 +2813,15 @@ class CipherTransformFactory {
           this.strf,
           num,
           gen,
-          this.encryptionKey
+          this.encryptionKey,
         ),
         this.buildCipherConstructor(
           this.cf,
           this.stmf,
           num,
           gen,
-          this.encryptionKey
-        )
+          this.encryptionKey,
+        ),
       );
     }
     // algorithms 1 and 2
@@ -1671,11 +2829,9 @@ class CipherTransformFactory {
       num,
       gen,
       this.encryptionKey,
-          /* isAes = */ false
+      /* isAes = */ false,
     );
-    const cipherConstructor = function buildCipherCipherConstructor() {
-      return new ARCFourCipher(key);
-    };
+    const cipherConstructor = () => new ARCFourCipher(key);
     return new CipherTransform(cipherConstructor, cipherConstructor);
   }
 
@@ -1691,15 +2847,15 @@ class CipherTransformFactory {
     userKeySalt: Uint8Array,
     ownerEncryption: Uint8Array,
     userEncryption: Uint8Array,
-    _perms: Uint8Array
+    _perms: Uint8Array,
   ) {
     if (password) {
       const passwordLength = Math.min(127, password.length);
       password = password.subarray(0, passwordLength);
     } else {
-      password = new Uint8Array;
+      password = new Uint8Array();
     }
-    let pdfAlgorithm;
+    let pdfAlgorithm: PDF20 | PDF17;
     if (revision === 6) {
       pdfAlgorithm = new PDF20();
     } else {
@@ -1716,14 +2872,14 @@ class CipherTransformFactory {
         password,
         ownerValidationSalt,
         uBytes,
-        ownerPassword
+        ownerPassword,
       )
     ) {
       return pdfAlgorithm.getOwnerKey(
         password,
         ownerKeySalt,
         uBytes,
-        ownerEncryption
+        ownerEncryption,
       );
     }
 
@@ -1738,13 +2894,13 @@ class CipherTransformFactory {
     flags: number,
     revision: number,
     keyLength: number,
-    encryptMetadata: boolean
+    encryptMetadata: boolean,
   ) {
     const hashDataSize = 40 + ownerPassword.length + fileId.length;
     const hashData = new Uint8Array(hashDataSize);
-    let i = 0,
-      j,
-      n;
+    let i = 0;
+    let j;
+    let n;
     if (password) {
       n = Math.min(32, password.length);
       for (; i < n; ++i) {
@@ -1780,7 +2936,8 @@ class CipherTransformFactory {
       }
     }
     const encryptionKey = hash.subarray(0, keyLengthInBytes);
-    let cipher, checkData;
+    let cipher;
+    let checkData;
 
     if (revision >= 3) {
       for (i = 0; i < 32; ++i) {
@@ -1817,7 +2974,12 @@ class CipherTransformFactory {
     return encryptionKey;
   }
 
-  decodeUserPassword(password: Uint8Array, ownerPassword: Uint8Array, revision: number, keyLength: number) {
+  decodeUserPassword(
+    password: Uint8Array,
+    ownerPassword: Uint8Array,
+    revision: number,
+    keyLength: number,
+  ) {
     const hashData = new Uint8Array(32);
     let i = 0;
     const n = Math.min(32, password.length);
@@ -1836,7 +2998,8 @@ class CipherTransformFactory {
       }
     }
 
-    let cipher, userPassword;
+    let cipher;
+    let userPassword;
     if (revision >= 3) {
       userPassword = ownerPassword;
       const derivedKey = new Uint8Array(keyLengthInBytes);
@@ -1854,7 +3017,12 @@ class CipherTransformFactory {
     return userPassword;
   }
 
-  buildObjectKey(num: number, gen: number, encryptionKey: Uint8Array, isAes: boolean = false) {
+  buildObjectKey(
+    num: number,
+    gen: number,
+    encryptionKey: Uint8Array,
+    isAes: boolean = false,
+  ) {
     const key = new Uint8Array(encryptionKey.length + 9);
     const n = encryptionKey.length;
     let i;
@@ -1876,35 +3044,40 @@ class CipherTransformFactory {
     return hash.subarray(0, Math.min(encryptionKey.length + 5, 16));
   }
 
-  buildCipherConstructor(cf: PDFDict, name: PDFName, num: number, gen: number, key: Uint8Array) {
+  buildCipherConstructor(
+    cf: PDFDict,
+    name: PDFName,
+    num: number,
+    gen: number,
+    key: Uint8Array,
+  ) {
     if (!(name instanceof PDFName)) {
       throw new Error('Invalid crypt filter name.');
     }
-    const cryptFilter = cf.get(PDFName.of(name.asString().replace('/', ''))) as PDFDict;
+    const cryptFilter = cf.get(
+      PDFName.of(name.asString().replace('/', '')),
+    ) as PDFDict;
     let cfm;
     if (cryptFilter !== null && cryptFilter !== undefined) {
       cfm = cryptFilter.get(PDFName.of('CFM')) as PDFName;
     }
     if (!cfm || cfm.asString() === '/None') {
-      return function cipherTransformFactoryBuildCipherConstructorNone() {
-        return new NullCipher();
-      };
+      return () => new NullCipher();
     }
     if (cfm.asString() === '/V2') {
       return () =>
         new ARCFourCipher(
-          this.buildObjectKey(num, gen, key, /* isAes = */ false)
+          this.buildObjectKey(num, gen, key, /* isAes = */ false),
         );
     }
     if (cfm.asString() === '/AESV2') {
       return () =>
         new AES128Cipher(
-          this.buildObjectKey(num, gen, key, /* isAes = */ true)
+          this.buildObjectKey(num, gen, key, /* isAes = */ true),
         );
     }
     if (cfm.asString() === '/AESV3') {
-      return () =>
-        new AES256Cipher(key);
+      return () => new AES256Cipher(key);
     }
     throw new Error('Unknown crypto method');
   }

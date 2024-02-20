@@ -1,5 +1,5 @@
 {
-  "name": "pdf-lib",
+  "name": "@chebum/pdf-lib",
   "version": "1.17.1",
   "description": "Create and modify PDF files with JavaScript",
   "author": "Andrew Dillon <andrew.dillon.j@gmail.com>",
@@ -32,7 +32,7 @@
     "Ching Chang (https://github.com/ChingChang9)"
   ],
   "scripts": {
-    "release:latest": "yarn publish --tag latest && yarn pack && yarn release:tag",
+    "release:latest": "yarn publish --tag latest --access public && yarn pack && yarn release:tag",
     "release:next": "yarn publish --tag next",
     "release:prep": "yarn clean && yarn lint && yarn typecheck && yarn test && yarn build",
     "release:tag": "TAG=\"v$(yarn --silent get:version)\" && git tag $TAG && git push origin $TAG",
@@ -120,9 +120,9 @@
   "license": "MIT",
   "private": false,
   "homepage": "https://pdf-lib.js.org",
-  "repository": "git+https://github.com/Hopding/pdf-lib.git",
+  "repository": "git+https://github.com/chebum/pdf-lib.git",
   "bugs": {
-    "url": "https://github.com/Hopding/pdf-lib/issues"
+    "url": "https://github.com/chebum/pdf-lib/issues"
   },
   "keywords": [
     "pdf-lib",
