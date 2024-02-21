@@ -1122,12 +1122,18 @@ There are currently four apps:
 
 To install the latest stable version:
 
+1. Add the following line to the .npmrc file next to your package.json file. If the .npmrc file doesn't exist, create an empty file with the following line:
+
+```
+@chebum:registry=https://npm.pkg.github.com
+``` 
+
 ```bash
 # With npm
-npm install --save pdf-lib
+npm install --save @chebum/pdf-lib
 
 # With yarn
-yarn add pdf-lib
+yarn add @chebum/pdf-lib
 ```
 
 This assumes you're using [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/lang/en/) as your package manager.
