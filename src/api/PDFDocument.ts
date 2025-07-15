@@ -221,8 +221,10 @@ export default class PDFDocument {
     assertIs(ignoreEncryption, 'ignoreEncryption', ['boolean']);
 
     this.context = context;
-    let catalog: PDFCatalog | PDFDict = context.lookup(context.trailerInfo.Root) as PDFCatalog;
-    if (!(catalog instanceof PDFCatalog) && (catalog instanceof PDFDict)) {
+    let catalog: PDFCatalog | PDFDict = context.lookup(
+      context.trailerInfo.Root,
+    ) as PDFCatalog;
+    if (!(catalog instanceof PDFCatalog) && catalog instanceof PDFDict) {
       catalog = PDFCatalog.fromMapWithContext(catalog.asMap(), this.context);
     }
     this.catalog = catalog as PDFCatalog;
@@ -983,11 +985,11 @@ export default class PDFDocument {
       const fontkit = this.assertFontkit();
       embedder = subset
         ? await CustomFontSubsetEmbedder.for(
-          fontkit,
-          bytes,
-          customName,
-          features,
-        )
+            fontkit,
+            bytes,
+            customName,
+            features,
+          )
         : await CustomFontEmbedder.for(fontkit, bytes, customName, features);
     } else {
       throw new TypeError(
