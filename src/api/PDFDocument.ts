@@ -1394,10 +1394,12 @@ export default class PDFDocument {
 
   private computePages = (): PDFPage[] => {
     const pages: PDFPage[] = [];
-    this.catalog.Pages().traverse((node, ref) => {
+    const pageTree = this.catalog.Pages();
+    pageTree.traverse((node, ref) => {
       if (node instanceof PDFPageLeaf) {
         let page = this.pageMap.get(node);
         if (!page) {
+          node.set(PDFName.Parent, pageTree); // Set proper parent of a page object
           page = PDFPage.of(node, ref, this);
           this.pageMap.set(node, page);
         }

@@ -4,6 +4,7 @@ import {
   CharCodes,
   mergeIntoTypedArray,
   PDFDict,
+  PDFDocument,
   PDFHeader,
   PDFInvalidObject,
   PDFPageLeaf,
@@ -394,5 +395,17 @@ describe(`PDFParser`, () => {
     expect(object0).toBe(undefined);
     const object2 = context.lookup(PDFRef.of(2));
     expect(object2).toBeInstanceOf(PDFString);
+  });
+
+
+
+  it(`can parse PDF files generated with family tree software`, async () => {
+    const pdfBytes = fs.readFileSync(
+      './assets/pdfs/family_tree.pdf',
+    );
+
+    const pdfDoc = await PDFDocument.load(pdfBytes);
+    expect(pdfDoc.getPageCount()).toEqual(1);
+    expect(pdfDoc.getPage(0).getRotation()).toEqual({angle: 0, type: 'degrees'});
   });
 });
