@@ -21,7 +21,12 @@ class PDFCatalog extends PDFDict {
     new PDFCatalog(map, context);
 
   Pages(): PDFPageTree {
-    return this.lookup(PDFName.of('Pages'), PDFDict) as PDFPageTree;
+    let result = this.lookup(PDFName.of('Pages'), PDFDict);
+    // Allows to read files produced by Family Tree Software
+    if (!(result instanceof PDFPageTree)) {
+      result = PDFPageTree.fromMapWithContext(result.asMap(), this.context);
+    }
+    return result as PDFPageTree;
   }
 
   AcroForm(): PDFDict | undefined {

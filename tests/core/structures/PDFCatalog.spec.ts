@@ -1,12 +1,4 @@
-import {
-  PDFCatalog,
-  PDFContext,
-  PDFDict,
-  PDFName,
-  PDFPageLeaf,
-  PDFPageTree,
-  PDFRef,
-} from 'src/index';
+import { PDFCatalog, PDFContext, PDFDict, PDFName, PDFPageLeaf, PDFPageTree, PDFRef } from 'src/index';
 
 describe(`PDFCatalog`, () => {
   it(`can be constructed directly from a Map and PDFContext`, () => {
@@ -29,13 +21,13 @@ describe(`PDFCatalog`, () => {
     expect(catalog.get(PDFName.of('Pages'))).toBe(pagesRef);
   });
 
-  it(`returns its Pages entry value when it's a reference`, () => {
+  it(`Pages entry should return PDFPageTree when it's a reference`, () => {
     const context = PDFContext.create();
     const pages = PDFDict.withContext(context);
     const pagesRef = context.register(pages);
     const catalog = PDFCatalog.withContextAndPages(context, pagesRef);
 
-    expect(catalog.Pages()).toBe(pages);
+    expect(catalog.Pages()).toBeInstanceOf(PDFPageTree);
   });
 
   it(`returns its Pages entry value when it's a direct object`, () => {
