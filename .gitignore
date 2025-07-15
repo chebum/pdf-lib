@@ -17,3 +17,5 @@ out.pdf
 *.tgz
 
 .vscode/settings.json
+/test.pdf
+/test-2.pdf
