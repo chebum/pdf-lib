@@ -5,6 +5,7 @@ import PDFContext from 'src/core/PDFContext';
 import PDFPageTree from 'src/core/structures/PDFPageTree';
 import { PDFAcroForm } from 'src/core/acroform';
 import ViewerPreferences from '../interactive/ViewerPreferences';
+import { PDFArray, PDFPageLeaf } from 'src/core';
 
 class PDFCatalog extends PDFDict {
   static withContextAndPages = (
@@ -24,7 +25,17 @@ class PDFCatalog extends PDFDict {
     let result = this.lookup(PDFName.of('Pages'), PDFDict);
     // Allows to read files produced by Family Tree Software
     if (!(result instanceof PDFPageTree)) {
-      result = PDFPageTree.fromMapWithContext(result.asMap(), this.context);
+      const pageTree = PDFPageTree.fromMapWithContext(result.asMap(), this.context);
+      const kids = result.lookup(PDFName.of('Kids'));
+      if (kids instanceof PDFArray) {
+        for (let idx = 0, len = kids.size(); idx < len; idx++) {
+          const kid = kids.lookup(idx);
+          if (kid instanceof PDFPageLeaf) {
+            kid.set(PDFName.Parent, pageTree);
+          }
+        }
+      }
+      result = pageTree;
     }
     return result as PDFPageTree;
   }

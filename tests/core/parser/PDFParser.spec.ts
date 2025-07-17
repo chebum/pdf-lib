@@ -400,12 +400,13 @@ describe(`PDFParser`, () => {
 
 
   it(`can parse PDF files generated with family tree software`, async () => {
-    const pdfBytes = fs.readFileSync(
-      './assets/pdfs/family_tree.pdf',
-    );
+    const pdfBytes = fs.readFileSync('./assets/pdfs/family_tree.pdf');
 
     const pdfDoc = await PDFDocument.load(pdfBytes);
     expect(pdfDoc.getPageCount()).toEqual(1);
-    expect(pdfDoc.getPage(0).getRotation()).toEqual({angle: 0, type: 'degrees'});
+    expect(pdfDoc.getPage(0).getRotation()).toEqual({
+      angle: 0,
+      type: 'degrees',
+    });
   });
 });

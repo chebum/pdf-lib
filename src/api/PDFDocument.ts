@@ -221,9 +221,9 @@ export default class PDFDocument {
     assertIs(ignoreEncryption, 'ignoreEncryption', ['boolean']);
 
     this.context = context;
-    let catalog: PDFCatalog | PDFDict = context.lookup(
+    let catalog: PDFCatalog | PDFDict | undefined = context.lookup(
       context.trailerInfo.Root,
-    ) as PDFCatalog;
+    ) as PDFCatalog | PDFDict | undefined;
     if (!(catalog instanceof PDFCatalog) && catalog instanceof PDFDict) {
       catalog = PDFCatalog.fromMapWithContext(catalog.asMap(), this.context);
     }
@@ -1214,7 +1214,7 @@ export default class PDFDocument {
    * const embeddedPages = await pdfDoc.embedPages([page1, page2, page3])
    * ```
    *
-   * @param page
+   * @param pages
    * The pages to be embedded (they must all share the same context).
    * @param boundingBoxes
    * Optionally, an array of clipping boundaries - one for each page
@@ -1401,7 +1401,6 @@ export default class PDFDocument {
       if (node instanceof PDFPageLeaf) {
         let page = this.pageMap.get(node);
         if (!page) {
-          node.set(PDFName.Parent, pageTree); // Set proper parent of a page object
           page = PDFPage.of(node, ref, this);
           this.pageMap.set(node, page);
         }
